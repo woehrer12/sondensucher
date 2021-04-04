@@ -38,14 +38,17 @@ def csv():
     for line in antwort.split('\n'):
         print(line)
         sonde = []
-        for line in line.split(';'):
-            sonde.append(line)
-            print(line)
-        #Leere Lines nicht eintragen
-        if sonde != [''] :
+        if len(line) != 0:
+            for line in line.split(';'):
+                if len(line) == 0:
+                    line = "0"
+                sonde.append(line)
+            #Leere Lines nicht eintragen
             print(sonde)
             #Datenbank eintragen
             payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES ('" + sonde[0] + "', " + sonde [1] + ", " + sonde[2] + ", " + sonde [3] + ", " + sonde[4] + ", " + sonde [5] + ", " + sonde[6] + ", " + sonde [7] + ", " + sonde[8] + ", 'radiosondy')"
+            print(payload)
             mycursor.execute(payload)        
             mydb.commit()
 
+csv()
