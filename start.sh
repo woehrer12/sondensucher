@@ -1,13 +1,8 @@
 
-if [ -d ./sondensucher]  # existiert Ordner Sondensucher
-	then
         echo =====Sondensucher aktualisiert=====
-   		cd sondensucher/
+   		cd ./sondensucher/
         git pull
-   	else
-		echo =====Ordner Sondensucher wird erstellt=====
-		git clone https://github.com/woehrer12/sondensucher.git
-fi
+        cd /
 
 sleep 30
 python3 ./sondensucher/Python/Database.py
