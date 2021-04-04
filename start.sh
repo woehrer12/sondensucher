@@ -9,4 +9,5 @@ if [ -d ./sondensucher]  # existiert Ordner Sondensucher
 		git clone https://github.com/woehrer12/sondensucher.git
 fi
 
+sleep 30
 python3 ./sondensucher/Python/Database.py
