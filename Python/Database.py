@@ -1,4 +1,6 @@
 import mysql.connector
+import configparser
+import os
 
 def checkTableExists(dbcon, tablename):
     dbcur = dbcon.cursor()
@@ -15,12 +17,30 @@ def checkTableExists(dbcon, tablename):
     return False
 
 
+# Config Datei anlegen und auslesen
+config = configparser.ConfigParser()
+if os.path.isfile("dbconfig.ini"):
+    ("Config File gefunden")
+else:
+    print("Config File angelegt")
+    config['DEFAULT'] = {'dbpfad': 'db',
+                      'dbuser': 'sondensucher',
+                      'dbpassword': 'sondensucher',
+                      'dbname': 'sonden'}
+
+    with open('dbconfig.ini', 'w') as configfile:
+        config.write(configfile)
+
+config.read('dbconfig.ini')
+conf = config['DEFAULT']
+
+
 
 mydb = mysql.connector.connect(
-  host="db",
-  user="sondensucher",
-  password="sondensucher",
-  database="sonden",
+  host=conf['dbpfad'],
+  user=conf['dbuser'],
+  password=conf['dbpassword'],
+  database=conf['dbname'],
   auth_plugin='mysql_native_password'
 )
 
@@ -53,6 +73,4 @@ else:
         `geplatzt`  tinyint(1) \
         )")
     print("Tabelle wurde erstellt")
-
-
 
