@@ -8,3 +8,5 @@ if [ -d ./sondensucher]  # existiert Ordner Sondensucher
 		echo =====Ordner Skripte wird erstellt=====
 		git clone https://github.com/woehrer12/sondensucher.git
 fi
+
+python3 ./sondensucher/Python/Database.py
