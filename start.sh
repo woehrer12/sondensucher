@@ -1,4 +1,4 @@
-cd
+
 if [ -d ./sondensucher]  # existiert Ordner Sondensucher
 	then
         echo =====Sondensucher aktualisiert=====
