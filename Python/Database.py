@@ -17,7 +17,7 @@ def checkTableExists(dbcon, tablename):
 
 
 mydb = mysql.connector.connect(
-  host="localhost",
+  host="db",
   user="sondensucher",
   password="sondensucher",
   database="sonden",

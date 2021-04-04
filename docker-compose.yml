@@ -26,7 +26,10 @@ services:
         MA_USER: sondensucher
         PMA_PASSWORD: sondensucher
         MYSQL_ROOT_PASSWORD: sondensucher
+
   sondensucher:
+    depends_on:
+        - db
     image: sondensucher
     #restart: always
     volumes: 

@@ -5,6 +5,7 @@ RUN command apt-get install sudo
 RUN command apt-get install git -y
 #Skripte nachladen
 RUN command git clone https://github.com/woehrer12/skripte.git
+RUN command git clone https://github.com/woehrer12/sondensucher.git
 #System Updaten
 RUN command ./skripte/updater.sh
 #Python installieren
@@ -13,3 +14,4 @@ RUN command pip3 install mysql-connector-python
 
 RUN echo HELLO
 
+CMD [ "python3", "./sondensucher/Python/Database.py" ]
