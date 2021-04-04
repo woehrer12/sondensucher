@@ -14,4 +14,6 @@ RUN command pip3 install mysql-connector-python
 
 RUN echo HELLO
 
-CMD [ "python3", "./sondensucher/Python/Database.py" ]
+CMD ./sondensucher/start.sh
+
+#CMD [ "python3", "./sondensucher/Python/Database.py" ]
