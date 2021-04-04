@@ -1,2 +1,5 @@
 dbconfig.ini
 Python/__pycache__/*
+*/server.crt
+.gitignore
+*/server.key

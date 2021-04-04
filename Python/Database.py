@@ -44,10 +44,11 @@ mydb = mysql.connector.connect(
   auth_plugin='mysql_native_password'
 )
 
+#Datenbank sonden anlegen
 if checkTableExists(mydb,"sonden"):
-    print("Existiert")
+    print("Datenbank Sonden Existiert")
 else:
-    print("Existiert nicht")
+    print("Datenbank Sonden Existiert nicht")
     mycursor = mydb.cursor()
     mycursor.execute("CREATE TABLE sonden(\
         `id` int(11) NOT NULL AUTO_INCREMENT, \
@@ -71,5 +72,20 @@ else:
         `geplatzt`  tinyint(1), \
         PRIMARY KEY (id) \
         )")
-    print("Tabelle wurde erstellt")
+    print("Datenbank Sonden wurde erstellt")
 
+#Datenbank sonden anlegen
+if checkTableExists(mydb,"hoehen"):
+    print("Datenbank Höhen Existiert")
+else:
+    print("Datenbank Höhen Existiert nicht")
+    mycursor = mydb.cursor()
+    mycursor.execute("CREATE TABLE hoehen(\
+        `id` int(11) NOT NULL AUTO_INCREMENT, \
+        `lat` double NOT NULL, \
+        `lon` double NOT NULL, \
+        `hoehe` double NOT NULL, \
+        `quelle` text NOT NULL, \
+        PRIMARY KEY (id) \
+        )")
+    print("Datenbank Höhen wurde erstellt")

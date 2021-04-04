@@ -1,39 +1,50 @@
 version: '3.7'
 services:
 
-  db:
-    image: mysql:latest
-    volumes:
-          - db_data:/var/lib/mysql
-    restart: always
-    ports:
-        - "3306:3306"
-    environment:
-        MYSQL_ROOT_PASSWORD: sondensucher
-        MYSQL_DATABASE: sonden
-        MYSQL_USER: sondensucher
-        MYSQL_PASSWORD: sondensucher
+    db:
+        image: mysql:latest
+        volumes:
+            - db_data:/var/lib/mysql
+        restart: always
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: sondensucher
+            MYSQL_DATABASE: sonden
+            MYSQL_USER: sondensucher
+            MYSQL_PASSWORD: sondensucher
 
-  phpmyadmin:
-    depends_on:
-        - db
-    image: phpmyadmin
-    restart: always
-    ports:
-        - 8081:80
-    environment:
-        PMA_HOST: db
-        MA_USER: sondensucher
-        PMA_PASSWORD: sondensucher
-        MYSQL_ROOT_PASSWORD: sondensucher
+    phpmyadmin:
+        depends_on:
+            - db
+        image: phpmyadmin
+        restart: always
+        ports:
+            - 8081:80
+        environment:
+            PMA_HOST: db
+            MA_USER: sondensucher
+            PMA_PASSWORD: sondensucher
+            MYSQL_ROOT_PASSWORD: sondensucher
 
-  sondensucher:
-    depends_on:
-        - db
-    image: sondensucher
-    #restart: always
-    volumes: 
-        - ./Python:/Python
+    sondensucher:
+        depends_on:
+            - db
+        image: sondensucher
+        #restart: always
+        volumes: 
+            - ./Python:/Python
+
+    sondenweb:
+        image: sondenweb
+        ports:
+            - "8001:80"
+        volumes:
+            - ./www:/var/www
+        environment:
+            - APP_KEY=SomeRandomStringToAddSecurity123
+            - APP_ENV=development
+            - APP_DEBUG=true
 
 volumes:
     db_data: {}
