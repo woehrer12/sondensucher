@@ -33,10 +33,10 @@ def csv():
 
     antwort = httpx.text
 
-    print(antwort)
+    #print(antwort)
 
     for line in antwort.split('\n'):
-        print(line)
+        #print(line)
         sonde = []
         if len(line) != 0:
             for line in line.split(';'):
@@ -44,10 +44,10 @@ def csv():
                     line = "0"
                 sonde.append(line)
             #Leere Lines nicht eintragen
-            print(sonde)
+            #print(sonde)
             #Datenbank eintragen
             payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES ('" + sonde[0] + "', " + sonde [1] + ", " + sonde[2] + ", " + sonde [3] + ", " + sonde[4] + ", " + sonde [5] + ", " + sonde[6] + ", " + sonde [7] + ", " + sonde[8] + ", 'radiosondy')"
-            print(payload)
+            #print(payload)
             mycursor.execute(payload)        
             mydb.commit()
 
