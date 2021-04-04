@@ -1,0 +1,1 @@
+sudo docker exec -it sondensucher_sondensucher_1 /bin/bash
