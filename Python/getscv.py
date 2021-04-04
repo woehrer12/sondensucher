@@ -16,6 +16,7 @@ mydb = mysql.connector.connect(
     database=conf['dbname'],
     auth_plugin='mysql_native_password'
     )
+mycursor = mydb.cursor() 
 
 #Header fälschen
 headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '\
@@ -42,6 +43,8 @@ for line in antwort.split('\n'):
     if sonde != [''] :
         print(sonde)
         #TODO Datenbank eintrag richtig anlegen und prüfen
-        mycursor.execute("INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime) VALUES (%s,%s,%s,%s)",(lat,lng,elevation,quelle,))        
+        payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES ('" + sonde[0] + "', " + sonde [1] + ", " + sonde[2] + ", " + sonde [3] + ", " + sonde[4] + ", " + sonde [5] + ", " + sonde[6] + ", " + sonde [7] + ", " + sonde[8] + ", 'radiosondy')"
+        print(payload)
+        mycursor.execute(payload)        
         mydb.commit()
 

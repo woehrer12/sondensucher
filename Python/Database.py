@@ -50,7 +50,7 @@ else:
     print("Existiert nicht")
     mycursor = mydb.cursor()
     mycursor.execute("CREATE TABLE sonden(\
-        `id` int(11) NOT NULL, \
+        `id` int(11) NOT NULL AUTO_INCREMENT, \
         `sondenid` text NOT NULL, \
         `lat` double NOT NULL, \
         `lon` double NOT NULL, \
@@ -58,19 +58,18 @@ else:
         `hoehe` text NOT NULL, \
         `server` text NOT NULL, \
         `vgeschw` text NOT NULL, \
-        `temp` text NOT NULL, \
+        `temp` double DEFAULT '0.0' NOT NULL, \
         `freq` text NOT NULL, \
-        `sondentype` text NOT NULL, \
         `richtung` text NOT NULL, \
         `geschw` text NOT NULL, \
-        `rssi` text NOT NULL, \
-        `frame` text NOT NULL, \
+        `rssi` double DEFAULT '0.0' NOT NULL, \
         `sondetime` text NOT NULL, \
-        `latsucher` text NOT NULL, \
-        `lonsucher` text NOT NULL, \
-        `altsucher` text NOT NULL, \
-        `dirsucher` text NOT NULL, \
-        `geplatzt`  tinyint(1) \
+        `latsucher` double DEFAULT '0.0' NOT NULL, \
+        `lonsucher` double DEFAULT '0.0' NOT NULL, \
+        `altsucher` double DEFAULT '0.0' NOT NULL, \
+        `dirsucher` double DEFAULT '0.0' NOT NULL, \
+        `geplatzt`  tinyint(1), \
+        PRIMARY KEY (id) \
         )")
     print("Tabelle wurde erstellt")
 
