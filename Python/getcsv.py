@@ -44,9 +44,8 @@ def csv():
         #Leere Lines nicht eintragen
         if sonde != [''] :
             print(sonde)
-            #TODO Datenbank eintrag richtig anlegen und prüfen
+            #Datenbank eintragen
             payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES ('" + sonde[0] + "', " + sonde [1] + ", " + sonde[2] + ", " + sonde [3] + ", " + sonde[4] + ", " + sonde [5] + ", " + sonde[6] + ", " + sonde [7] + ", " + sonde[8] + ", 'radiosondy')"
-            print(payload)
             mycursor.execute(payload)        
             mydb.commit()
 

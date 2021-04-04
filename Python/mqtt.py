@@ -1,9 +1,24 @@
 # python3.6
-
-import random
+import mysql.connector
+import configparser
+import json
 
 from paho.mqtt import client as mqtt_client
 
+#Config Datei auslesen
+config = configparser.ConfigParser()
+config.read('dbconfig.ini')
+conf = config['DEFAULT']
+
+#Datenbankverbindung herstellen
+mydb = mysql.connector.connect(
+    host=conf['dbpfad'],
+    user=conf['dbuser'],
+    password=conf['dbpassword'],
+    database=conf['dbname'],
+    auth_plugin='mysql_native_password'
+    )
+mycursor = mydb.cursor()
 
 broker = 'sondensucher.de'
 port = 1883
@@ -31,7 +46,13 @@ def connect_mqtt() -> mqtt_client:
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-
+        message = json.loads(msg.payload.decode())
+        payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES \
+        ('" + message["id"] + "', " + str(message["lat"]) + ", " + str(message["lon"]) + ", " + str(message["alt"]) + ", " + str(message["hs"]) + ", " + str(message["vs"]) + ", \
+            " + str(message["dir"]) + ", " + str(message["freq"]) + ", " + str(message["time"]) + ", '" + message["ser"] + "')"
+        print(payload)
+        mycursor.execute(payload)        
+        mydb.commit()
     client.subscribe(topic)
     client.on_message = on_message
 

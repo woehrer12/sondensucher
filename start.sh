@@ -6,4 +6,5 @@
 
 sleep 30
 python3 ./sondensucher/Python/Database.py
+python3 ./sondensucher/python/mqtt.py &
 python3 ./sondensucher/Python/loop.py
