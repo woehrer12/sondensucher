@@ -5,7 +5,7 @@ if [ -d ./sondensucher]  # existiert Ordner Sondensucher
    		cd sondensucher/
         git pull
    	else
-		echo =====Ordner Skripte wird erstellt=====
+		echo =====Ordner Sondensucher wird erstellt=====
 		git clone https://github.com/woehrer12/sondensucher.git
 fi
 
