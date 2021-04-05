@@ -11,7 +11,13 @@ config = configparser.ConfigParser()
 config.read('dbconfig.ini')
 conf = config['DEFAULT']
 
-
+mydb = mysql.connector.connect(
+  host=conf['dbpfad'],
+  user=conf['dbuser'],
+  password=conf['dbpassword'],
+  database=conf['dbname'],
+  auth_plugin='mysql_native_password'
+)
 
 logger = logging.getLogger()
 
@@ -32,18 +38,26 @@ class Sonden:
     confirm = False
 
     
+    def clear(self):
+        Sonden.sondenid = ""
+        Sonden.lat = ""
+        Sonden.lon = ""
+        Sonden.hoehe = ""
+        Sonden.server = ""
+        Sonden.vgeschw = ""
+        Sonden.freq = ""
+        Sonden.richtung = ""
+        Sonden.geschw = ""
+        Sonden.sondentime = ""
+        Sonden.server = ""
+        Sonden.confirm = False
+
 
     def setid(self, id):
+        Sonden.clear(self)
         logger.info("setid id = " + id)
         text = id
         if text.isalnum() and text[0].isalpha() and text[6].isdecimal() and len(text) > 7:
-            mydb = mysql.connector.connect(
-                host=conf['dbpfad'],
-                user=conf['dbuser'],
-                password=conf['dbpassword'],
-                database=conf['dbname'],
-                auth_plugin='mysql_native_password'
-                )
             mycursor = mydb.cursor()
             Sonden.sondenid = id
             query = "SELECT sondenid, lat, lon, hoehe, server, vgeschw, freq, richtung, geschw, sondetime FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' ORDER BY `sonden`.`date` DESC LIMIT 1"
@@ -69,13 +83,6 @@ class Sonden:
                 logging.error("ID not confirm")
     
     def refresh(self):
-        mydb = mysql.connector.connect(
-            host=conf['dbpfad'],
-            user=conf['dbuser'],
-            password=conf['dbpassword'],
-            database=conf['dbname'],
-            auth_plugin='mysql_native_password'
-            )
         mycursor = mydb.cursor()
         query = "SELECT sondenid, lat, lon, hoehe, server, vgeschw, freq, richtung, geschw, sondetime FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' ORDER BY `sonden`.`date` DESC LIMIT 1"
         mycursor.execute(query)
@@ -139,13 +146,6 @@ class Sonden:
   
 
     def getvgeschposD(self):
-        mydb = mysql.connector.connect(
-            host=conf['dbpfad'],
-            user=conf['dbuser'],
-            password=conf['dbpassword'],
-            database=conf['dbname'],
-            auth_plugin='mysql_native_password'
-            )
         query = "SELECT Avg (vgeschw) FROM `sonden` WHERE sondenid = '" + Sonden.sondenid + "'  AND vgeschw > 0"
         mycursor = mydb.cursor()
         mycursor.execute(query)
@@ -156,13 +156,6 @@ class Sonden:
         return(a[0])
 
     def getvgeschnegD(self):
-        mydb = mysql.connector.connect(
-            host=conf['dbpfad'],
-            user=conf['dbuser'],
-            password=conf['dbpassword'],
-            database=conf['dbname'],
-            auth_plugin='mysql_native_password'
-            )
         query = "SELECT Avg (vgeschw) FROM `sonden` WHERE sondenid = '" + Sonden.sondenid + "'  AND vgeschw < 0"
         mycursor = mydb.cursor()
         mycursor.execute(query)
@@ -173,13 +166,6 @@ class Sonden:
         return(a[0])
 
     def getmaxhoehe(self):
-        mydb = mysql.connector.connect(
-            host=conf['dbpfad'],
-            user=conf['dbuser'],
-            password=conf['dbpassword'],
-            database=conf['dbname'],
-            auth_plugin='mysql_native_password'
-            )
         mycursor = mydb.cursor()
         mycursor.execute("SELECT hoehe FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' LIMIT 5000")
         sondendaten = mycursor.fetchall()
@@ -194,13 +180,6 @@ class Sonden:
         return(max(data[0]))
         
     def isburst(self):
-        mydb = mysql.connector.connect(
-            host=conf['dbpfad'],
-            user=conf['dbuser'],
-            password=conf['dbpassword'],
-            database=conf['dbname'],
-            auth_plugin='mysql_native_password'
-            )
         mycursor = mydb.cursor()
         mycursor.execute("SELECT burst FROM sonden_stats WHERE sondenid = '" + Sonden.sondenid + "'")
         sondendaten = mycursor.fetchone()
@@ -216,28 +195,12 @@ class Sonden:
 	
     
     def setburst(self):
-        mydb = mysql.connector.connect(
-            host=conf['dbpfad'],
-            user=conf['dbuser'],
-            password=conf['dbpassword'],
-            database=conf['dbname'],
-            auth_plugin='mysql_native_password'
-            )
         Sonden.refresh(self)
-        
-        
         mycursor = mydb.cursor()
         mycursor.execute("UPDATE sonden_stats SET burst = TRUE, latburst = '" + Sonden.lat + "', lonburst = '" + Sonden.lon + "' WHERE sondenid = '" + Sonden.sondenid + "'")
         mydb.commit()
         
     def startort(self):
-        mydb = mysql.connector.connect(
-            host=conf['dbpfad'],
-            user=conf['dbuser'],
-            password=conf['dbpassword'],
-            database=conf['dbname'],
-            auth_plugin='mysql_native_password'
-            )
         mycursor = mydb.cursor()
         mycursor.execute("SELECT * FROM startorte")
         startorte = mycursor.fetchall()
@@ -262,3 +225,6 @@ class Sonden:
                     mydb.commit()
             i = i + 1
             #print(i)
+
+    def isconfirm(self):
+        return Sonden.confirm

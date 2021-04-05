@@ -1,12 +1,26 @@
 import mysql.connector
+import configparser
+
+#Config Datei auslesen
+config = configparser.ConfigParser()
+config.read('dbconfig.ini')
+conf = config['DEFAULT']
+
+mydb = mysql.connector.connect(
+  host=conf['dbpfad'],
+  user=conf['dbuser'],
+  password=conf['dbpassword'],
+  database=conf['dbname'],
+  auth_plugin='mysql_native_password'
+)
 
 def sondenids():
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="sondensucher",
-        password="g7BruFJ9sxmPJvCb",
-        database="sonden"
-    )
+    # mydb = mysql.connector.connect(
+    #     host="localhost",
+    #     user="sondensucher",
+    #     password="g7BruFJ9sxmPJvCb",
+    #     database="sonden"
+    # )
     mycursor = mydb.cursor() 
     mycursor.execute("SELECT sondenid FROM sonden WHERE date>(NOW() - INTERVAL 30 MINUTE) AND lat!='0' AND sondenid<>'' GROUP BY sondenid")
     sondenids = mycursor.fetchall()

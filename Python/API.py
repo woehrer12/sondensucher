@@ -55,25 +55,28 @@ def api_id():
     # Loop through the data and match results that fit the requested ID.
     # IDs are unique, but other fields might return many results
     sonde.setid(id)
-
-    results = [{'id' :sonde.getid(),
-                'lat' :sonde.getlat(),
-                'lon' :sonde.getlon(),
-                'hoehe' :sonde.gethoehe(),
-                'server' :sonde.getserver(),
-                'vgeschw' :sonde.getvgeschw(),
-                'freq' :sonde.getfreq(),
-                'richtung' :sonde.getrichtung(),
-                'geschw' :sonde.getgeschw(),
-                'time' :sonde.getsondentime(),
-                'vgeschposD' :sonde.getvgeschposD(),
-                'vgeschnegD' :sonde.getvgeschnegD(),
-                'maxhoehe' :sonde.getmaxhoehe()
-                }]
+    if sonde.isconfirm():
+        results = [{'id' :sonde.getid(),
+                    'lat' :sonde.getlat(),
+                    'lon' :sonde.getlon(),
+                    'hoehe' :sonde.gethoehe(),
+                    'server' :sonde.getserver(),
+                    'vgeschw' :sonde.getvgeschw(),
+                    'freq' :sonde.getfreq(),
+                    'richtung' :sonde.getrichtung(),
+                    'geschw' :sonde.getgeschw(),
+                    'time' :sonde.getsondentime(),
+                    'vgeschposD' :sonde.getvgeschposD(),
+                    'vgeschnegD' :sonde.getvgeschnegD(),
+                    'maxhoehe' :sonde.getmaxhoehe()
+                    }]
+        return jsonify(results)
+    else:
+         return "Keine Sonde mit der ID gefunden"
 
     # Use the jsonify function from Flask to convert our list of
     # Python dictionaries to the JSON format.
-    return jsonify(results)
+
 
 
 app.run()
