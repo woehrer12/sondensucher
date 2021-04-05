@@ -47,8 +47,9 @@ password = 'sondensucher'
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
-            #pass
-            print("Connected to MQTT Broker!")
+            pass
+            #print("Connected to MQTT Broker!")
+
         else:
             print("Failed to connect, return code %d\n", rc)
 
@@ -80,9 +81,9 @@ def run():
 
 if __name__ == '__main__':
     while True:
-        try:
+        #try:
             run()
-        except:
-            print("Unexpected error:" + str(sys.exc_info()[0]))
-            logger.error("Unexpected error:" + str(sys.exc_info()[0]))
-            time.sleep(60)
+        #except:
+        #    print("Unexpected error:" + str(sys.exc_info()[0]))
+        #    logger.error("Unexpected error:" + str(sys.exc_info()[0]))
+        #    time.sleep(60)
