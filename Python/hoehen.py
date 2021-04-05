@@ -1,6 +1,7 @@
 import mysql.connector
 import configparser
 import requests
+import sys
 
 #Config Datei auslesen
 config = configparser.ConfigParser()

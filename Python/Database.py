@@ -108,4 +108,7 @@ else:
         `lonburst` double DEFAULT '0.0' NOT NULL, \
         PRIMARY KEY (id) \
         )")
-    print("Datenbank Sonden Statistiken wurde erstellt")    
+    print("Datenbank Sonden Statistiken wurde erstellt")
+
+
+    #TODO doppelte finden
