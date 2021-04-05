@@ -9,6 +9,7 @@ from sonden_class import Sonden
 sonde = Sonden()
 
 app = flask.Flask(__name__)
+#TODO DEBUG deaktivieren
 app.config["DEBUG"] = True
 
 #Config Datei auslesen
