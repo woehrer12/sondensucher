@@ -21,14 +21,17 @@ def hoehe():
     payload = ""
     #Abfrage nach Höhen mir ?
     #TODO Exeption Handling einbauen wegen verlieren der Verbindung zur Datenbank
-    mycursor.execute("SELECT Id, Lat, Lon FROM hoehen WHERE Hoehe = '?' LIMIT 25")
+    try:
+        mycursor.execute("SELECT id, lat, lon FROM hoehen WHERE quelle = 'sonden_class.py' LIMIT 50")
+    except:
+        print("Unexpected error:" + str(sys.exc_info()[0]))
     request = mycursor.fetchall()
     länge = len(request)
     i=0
     #Funktion verlassen wenn keine Höhen erforderlich sind
     if länge == 0:
-        return None
         print("Keine Höhen zum Abfragen gefunden")
+        return None
     #Alle Höhen in Payload packen
     while i < länge:
         request1 = request[i]
@@ -67,20 +70,17 @@ def hoehe():
                 print("Höhe", elevation)
     
                 #Prüfen ob schon in Datenbank vorhanden
-
-                mycursor.execute("SELECT Lat, Lon FROM hoehen WHERE Lat LIKE %s AND Lon LIKE %s LIMIT 25", (lat, lng ))
+                query = "SELECT lat, lon FROM hoehen WHERE lat LIKE " + str(lat) + " AND lon LIKE " + str(lng) + " LIMIT 25"
+                mycursor.execute(query)
                 request = mycursor.fetchall()
-                print(request)
                 if elevation == None:
-                    elevation = "Wasser"
+                    elevation = 0
                 if request == []: 
                 
-                    #In Datenbank eintragen       
-                    mycursor.execute("INSERT INTO hoehen (Lat, Lon, Hoehe, Quelle) VALUES (%s,%s,%s,%s)",(lat,lng,elevation,quelle,))        
+                    #In Datenbank eintragen
+                    query = "INSERT INTO hoehen (lat, lon, hoehe, quelle) VALUES (" + str(lat) + ", " + str(lng) + ", " + str(elevation) + ", '" + quelle + "' )"
+                    mycursor.execute(query)        
                     mydb.commit()
-                    neue = neue + 1
-                
-                
                 
             j = j + 1     
         
@@ -88,3 +88,4 @@ def hoehe():
         print('Not Found.')
 
 
+hoehe()

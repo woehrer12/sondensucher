@@ -36,24 +36,6 @@ def sondenids():
 
     return list
 
-
-def hoeheabfragen(lat,lon):
-    mydb = mysql.connector.connect(
-    host="localhost",
-    user="sondensucher",
-    password="g7BruFJ9sxmPJvCb",
-    database="sonden"
-    )
-    mycursor = mydb.cursor() 
-    mycursor.execute("SELECT Hoehe FROM hoehen WHERE Lat = " + str(lat) + " AND  Lon = " + str(lon))
-    hoehe = mycursor.fetchall()
-    if hoehe == []:
-        print("Höhe nicht bekannt")
-        mycursor.execute("INSERT INTO hoehen (Lat, Lon, Hoehe, Quelle) VALUES (%s,%s,%s,%s)",(str(lat),str(lon),"?","sonden.py",))
-        mydb.commit()
-        
-    return hoehe
-
 def tupletostring(sondenid):
     string = str(sondenid)
     stringlänge = len(string)

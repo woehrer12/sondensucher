@@ -24,8 +24,13 @@ def sonden():
     anzahlids = len(sondenids)
     j = 0
 
+
+    
+
     while j <anzahlids:
         sonde.setid(sondenids[j])
+        print(sonde.getgroudhohe())
+        print(type(sonde.getgroudhohe()))
         j = j + 1
         
 
