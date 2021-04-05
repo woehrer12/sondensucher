@@ -66,6 +66,7 @@ class Sonden:
             data = mycursor.fetchall()
             mycursor.close()
             if data != []:
+                #Statistiken erstellen
                 Sonden.set_stats(self)
                 sondendaten = data[0]
                 Sonden.sondenid = sondendaten[0]
@@ -248,3 +249,14 @@ class Sonden:
         else:    
             mycursor.execute("INSERT INTO sonden_stats (sondenid, startort, max_hoehe, vgeschposD, vgeschnegD) VALUES ('" + Sonden.sondenid + "', '" + Sonden.startort(self) + "', " + str(Sonden.getmaxhoehe(self)) + "," + str(Sonden.getvgeschposD(self)) + "," + str(Sonden.getvgeschnegD(self)) +")")        
             mydb.commit()
+
+    def getgroudhohe(self):
+        mycursor = mydb.cursor() 
+        mycursor.execute("SELECT Hoehe FROM hoehen WHERE Lat = " + str(Sonden.lat) + " AND  Lon = " + str(Sonden.lon))
+        hoehe = mycursor.fetchone()
+        print(hoehe)
+        if hoehe == None:
+            print("Höhe nicht bekannt")
+            mycursor.execute("INSERT INTO hoehen (lat, lon, hoehe, quelle) VALUES (%s,%s,%s,%s)",(str(Sonden.lat),str(Sonden.lon),"0","sonden_class.py",))
+            mydb.commit()
+        return hoehe
