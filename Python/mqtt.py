@@ -2,8 +2,18 @@
 import mysql.connector
 import configparser
 import json
+import logging
 
 from paho.mqtt import client as mqtt_client
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler("logs/mqtt.log")
+formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
+handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
+logger.addHandler(handler)
+logger.info("Skript gestartet")
 
 #Config Datei auslesen
 config = configparser.ConfigParser()
