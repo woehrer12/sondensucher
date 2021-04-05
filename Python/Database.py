@@ -57,7 +57,7 @@ else:
         `lon` double NOT NULL, \
         `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \
         `hoehe` int NOT NULL, \
-        `server` double NOT NULL, \
+        `server` text NOT NULL, \
         `vgeschw` double NOT NULL, \
         `temp` double DEFAULT '0.0' NOT NULL, \
         `freq` text NOT NULL, \

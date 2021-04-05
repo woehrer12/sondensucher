@@ -25,32 +25,32 @@ logger = logging.getLogger()
 class Sonden:
 
     sondenid = ""
-    lat = ""
-    lon = ""
-    hoehe = ""
-    server = ""
-    vgeschw = ""
+    lat = 0.0
+    lon = 0.0
+    hoehe = 0
+    server = 0.0
+    vgeschw = 0.0
     freq = ""
-    richtung = ""
-    geschw = ""
+    richtung = 0.0
+    geschw = 0.0
     sondentime = ""
     server = ""
     confirm = False
 
     
     def clear(self):
-        Sonden.sondenid = ""
-        Sonden.lat = ""
-        Sonden.lon = ""
-        Sonden.hoehe = ""
-        Sonden.server = ""
-        Sonden.vgeschw = ""
-        Sonden.freq = ""
-        Sonden.richtung = ""
-        Sonden.geschw = ""
-        Sonden.sondentime = ""
-        Sonden.server = ""
-        Sonden.confirm = False
+        sondenid = ""
+        lat = 0.0
+        lon = 0.0
+        hoehe = 0
+        server = 0.0
+        vgeschw = 0.0
+        freq = ""
+        richtung = 0.0
+        geschw = 0.0
+        sondentime = ""
+        server = ""
+        confirm = False
 
 
     def setid(self, id):
@@ -182,7 +182,6 @@ class Sonden:
 
     def checkburst(self):
         print(Sonden.vgeschw)
-        #TODO float to string
         if float(Sonden.vgeschw) < -2.0 and float(Sonden.hoehe) > 5000 :
             Sonden.setburst(self)
 
