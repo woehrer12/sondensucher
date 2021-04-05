@@ -3,6 +3,8 @@ import mysql.connector
 import configparser
 import json
 import logging
+import sys
+import time
 
 from paho.mqtt import client as mqtt_client
 
@@ -74,4 +76,10 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    while True:
+        try:
+            run()
+        except:
+            print("Unexpected error:" + str(sys.exc_info()[0]))
+            logger.error("Unexpected error:" + str(sys.exc_info()[0]))
+            time.sleep(60)

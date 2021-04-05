@@ -4,6 +4,7 @@ RUN command apt-get install sudo
 #Git installieren
 RUN command apt-get install git -y
 #Skripte nachladen
+RUN mkdir /logs
 RUN cd
 RUN command git clone https://github.com/woehrer12/skripte.git
 RUN command git clone https://github.com/woehrer12/sondensucher.git

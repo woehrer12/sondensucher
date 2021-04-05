@@ -2,6 +2,17 @@ import csv
 import requests
 import mysql.connector
 import configparser
+import logging
+import sys
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler("logs/getcsv.log")
+formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
+handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
+logger.addHandler(handler)
+logger.info("Skript gestartet")
 
 #Config Datei auslesen
 config = configparser.ConfigParser()
@@ -28,27 +39,31 @@ url = "https://radiosondy.info/export/csv_live.php"
 #sondenid; lat; lon; hoehe; geschw; vgeschw; richtung; freq; sondetime
 
 def csv():
+    try:
+        httpx = requests.get(url, headers=headers)
 
-    httpx = requests.get(url, headers=headers)
+        antwort = httpx.text
 
-    antwort = httpx.text
+        #print(antwort)
 
-    #print(antwort)
+        for line in antwort.split('\n'):
+            #print(line)
+            sonde = []
+            if len(line) != 0:
+                for line in line.split(';'):
+                    if len(line) == 0:
+                        line = "0"
+                    sonde.append(line)
+                #Leere Lines nicht eintragen
+                #print(sonde)
+                #Datenbank eintragen
+                payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES ('" + sonde[0] + "', " + sonde [1] + ", " + sonde[2] + ", " + sonde [3] + ", " + sonde[4] + ", " + sonde [5] + ", " + sonde[6] + ", " + sonde [7] + ", " + sonde[8] + ", 'radiosondy')"
+                #print(payload)
+                mycursor.execute(payload)        
+                mydb.commit()
+    except:
+        print("Unexpected error:" + str(sys.exc_info()[0]))
+        logger.error("Unexpected error:" + str(sys.exc_info()[0]))
 
-    for line in antwort.split('\n'):
-        #print(line)
-        sonde = []
-        if len(line) != 0:
-            for line in line.split(';'):
-                if len(line) == 0:
-                    line = "0"
-                sonde.append(line)
-            #Leere Lines nicht eintragen
-            #print(sonde)
-            #Datenbank eintragen
-            payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES ('" + sonde[0] + "', " + sonde [1] + ", " + sonde[2] + ", " + sonde [3] + ", " + sonde[4] + ", " + sonde [5] + ", " + sonde[6] + ", " + sonde [7] + ", " + sonde[8] + ", 'radiosondy')"
-            #print(payload)
-            mycursor.execute(payload)        
-            mydb.commit()
 
 csv()
