@@ -47,8 +47,8 @@ password = 'sondensucher'
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
-            pass
-            #print("Connected to MQTT Broker!")
+            #pass
+            print("Connected to MQTT Broker!")
         else:
             print("Failed to connect, return code %d\n", rc)
 
@@ -66,7 +66,6 @@ def subscribe(client: mqtt_client):
         payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES \
         ('" + message["id"] + "', " + str(message["lat"]) + ", " + str(message["lon"]) + ", " + str(message["alt"]) + ", " + str(message["hs"]) + ", " + str(message["vs"]) + ", \
             " + str(message["dir"]) + ", " + str(message["freq"]) + ", " + str(message["time"]) + ", '" + message["ser"] + "')"
-        print(payload)
         mycursor.execute(payload)        
         mydb.commit()
     client.subscribe(topic)
