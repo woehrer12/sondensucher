@@ -9,14 +9,17 @@ config.read('dbconfig.ini')
 conf = config['DEFAULT']
 
 #Datenbankverbindung herstellen
-mydb = mysql.connector.connect(
-    host=conf['dbpfad'],
-    user=conf['dbuser'],
-    password=conf['dbpassword'],
-    database=conf['dbname'],
-    auth_plugin='mysql_native_password'
-    )
-mycursor = mydb.cursor() 
+try:
+    mydb = mysql.connector.connect(
+        host=conf['dbpfad'],
+        user=conf['dbuser'],
+        password=conf['dbpassword'],
+        database=conf['dbname'],
+        auth_plugin='mysql_native_password'
+        )
+    mycursor = mydb.cursor()
+except:
+    print("Unexpected error:" + str(sys.exc_info()[0]))
 
 def hoehe():
     payload = ""
@@ -26,6 +29,7 @@ def hoehe():
         mycursor.execute("SELECT id, lat, lon FROM hoehen WHERE quelle = 'sonden_class.py' LIMIT 50")
     except:
         print("Unexpected error:" + str(sys.exc_info()[0]))
+        return None
     request = mycursor.fetchall()
     länge = len(request)
     i=0
