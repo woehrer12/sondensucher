@@ -12,7 +12,7 @@ RUN command git clone https://github.com/woehrer12/sondensucher.git
 #RUN command ./skripte/updater.sh
 #Python installieren
 RUN command apt install python3-pip -y
-RUN command pip3 install mysql-connector-python requests paho-mqtt
+RUN command pip3 install mysql-connector-python requests paho-mqtt flask numpy
 
 RUN echo HELLO
 
