@@ -66,6 +66,7 @@ class Sonden:
             data = mycursor.fetchall()
             mycursor.close()
             if data != []:
+                Sonden.set_stats(self)
                 sondendaten = data[0]
                 Sonden.sondenid = sondendaten[0]
                 Sonden.lat = sondendaten[1]
@@ -178,7 +179,13 @@ class Sonden:
             data[0][j] = sondendaten1[0]
             j = j + 1
         return(max(data[0]))
-        
+
+    def checkburst(self):
+        print(Sonden.vgeschw)
+        #TODO float to string
+        if float(Sonden.vgeschw) < -2.0 and float(Sonden.hoehe) > 5000 :
+            Sonden.setburst(self)
+
     def isburst(self):
         mycursor = mydb.cursor()
         mycursor.execute("SELECT burst FROM sonden_stats WHERE sondenid = '" + Sonden.sondenid + "'")
@@ -201,6 +208,7 @@ class Sonden:
         mydb.commit()
         
     def startort(self):
+        return("unbekannt") #TODO Datenbank Startorte anlegen
         mycursor = mydb.cursor()
         mycursor.execute("SELECT * FROM startorte")
         startorte = mycursor.fetchall()
@@ -212,6 +220,7 @@ class Sonden:
         print("Lon: " + sondendaten[1])
         k = len(startorte)
         i = 0
+        #TODO optimieren. Evtl SQL Abfrage direkt mit Koordinaten machen
         while i < k:
             #print(sondendaten[0])
             #print(startorte[i][2])
@@ -221,10 +230,22 @@ class Sonden:
                 if (float(sondendaten[1]) < float(startorte[i][3]) + 0.1) and (float(sondendaten[1]) > float(startorte[i][3]) - 0.1):
                     print("Treffer")
                     print(startorte[i][1])
-                    mycursor.execute("UPDATE sonden_stats SET startort = '" + startorte[i][1] + "' WHERE sondenid = '" + Sonden.sondenid + "'")
-                    mydb.commit()
+                    return(startorte[i][1])
             i = i + 1
             #print(i)
+        return("unbekannt")
 
     def isconfirm(self):
         return Sonden.confirm
+
+    def set_stats(self):
+        Sonden.checkburst(self)
+        mycursor = mydb.cursor()
+        mycursor.execute("SELECT * FROM `sonden_stats` WHERE sondenid = '"+ Sonden.sondenid + "' ")
+        sonden = mycursor.fetchall()
+        if sonden != []:
+            mycursor.execute("UPDATE sonden_stats SET max_hoehe = '" + str(Sonden.getmaxhoehe(self)) + "', vgeschposD = '" + str(Sonden.getvgeschposD(self)) + "', vgeschnegD = '" + str(Sonden.getvgeschnegD(self)) + "' WHERE sondenid = '" + Sonden.sondenid + "'")
+            mydb.commit()
+        else:    
+            mycursor.execute("INSERT INTO sonden_stats (sondenid, startort, max_hoehe, vgeschposD, vgeschnegD) VALUES ('" + Sonden.sondenid + "', '" + Sonden.startort(self) + "', " + str(Sonden.getmaxhoehe(self)) + "," + str(Sonden.getvgeschposD(self)) + "," + str(Sonden.getvgeschnegD(self)) +")")        
+            mydb.commit()

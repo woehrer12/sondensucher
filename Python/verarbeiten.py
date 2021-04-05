@@ -19,23 +19,25 @@ mydb = mysql.connector.connect(
   auth_plugin='mysql_native_password'
 )
 
-def sonde():
+def sonden():
     sondenids = functions.sondenids()
     anzahlids = len(sondenids)
     j = 0
+    print(sondenids[1])
+    mycursor = mydb.cursor()
+    query = "SELECT lat FROM sonden WHERE sondenid = '" + sondenids[1] + "' LIMIT 1"
+    print(query)
+    mycursor.execute(query)
+    sondendaten = mycursor.fetchone()
+    mycursor.close()
+    print(sondendaten[0])
+    print(type(sondendaten[0]))
+
 
     while j <anzahlids:
-        sonde.setid(sondenids[j])
+        #sonde.setid(sondenids[j])
         j = j + 1
         
-        if float(sonde.getvgeschw()) < 2.0 and float(sonde.gethoehe()) > 5000 :
-            if sonde.isburst() == False:
-                sonde.setburst()
-    
-
-        if float(sonde.getvgeschw()) > 2.0 and float(sonde.gethoehe()) < 3000:
-            sonde.startort()
 
 
-
-sonde()
+sonden()

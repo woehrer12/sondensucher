@@ -20,6 +20,7 @@ mycursor = mydb.cursor()
 def hoehe():
     payload = ""
     #Abfrage nach Höhen mir ?
+    #TODO Exeption Handling einbauen wegen verlieren der Verbindung zur Datenbank
     mycursor.execute("SELECT Id, Lat, Lon FROM hoehen WHERE Hoehe = '?' LIMIT 25")
     request = mycursor.fetchall()
     länge = len(request)

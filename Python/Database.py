@@ -56,20 +56,19 @@ else:
         `lat` double NOT NULL, \
         `lon` double NOT NULL, \
         `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \
-        `hoehe` text NOT NULL, \
-        `server` text NOT NULL, \
-        `vgeschw` text NOT NULL, \
+        `hoehe` int NOT NULL, \
+        `server` double NOT NULL, \
+        `vgeschw` double NOT NULL, \
         `temp` double DEFAULT '0.0' NOT NULL, \
         `freq` text NOT NULL, \
-        `richtung` text NOT NULL, \
-        `geschw` text NOT NULL, \
+        `richtung` double NOT NULL, \
+        `geschw` double NOT NULL, \
         `rssi` double DEFAULT '0.0' NOT NULL, \
         `sondetime` text NOT NULL, \
         `latsucher` double DEFAULT '0.0' NOT NULL, \
         `lonsucher` double DEFAULT '0.0' NOT NULL, \
         `altsucher` double DEFAULT '0.0' NOT NULL, \
         `dirsucher` double DEFAULT '0.0' NOT NULL, \
-        `geplatzt`  tinyint(1), \
         PRIMARY KEY (id) \
         )")
     print("Datenbank Sonden wurde erstellt")
@@ -89,3 +88,24 @@ else:
         PRIMARY KEY (id) \
         )")
     print("Datenbank Höhen wurde erstellt")
+
+
+#Datenbank sonden anlegen
+if checkTableExists(mydb,"sonden_stats"):
+    print("Datenbank Sonden Statistiken Existiert")
+else:
+    print("Datenbank Sonden Statistiken Existiert nicht")
+    mycursor = mydb.cursor()
+    mycursor.execute("CREATE TABLE sonden_stats(\
+        `id` int(11) NOT NULL AUTO_INCREMENT, \
+        `sondenid` text NOT NULL, \
+        `startort` text NOT NULL, \
+        `max_hoehe` int(11) NOT NULL, \
+        `vgeschposD` text NOT NULL, \
+        `vgeschnegD` text NOT NULL, \
+        `burst` tinyint(1) DEFAULT '0' NOT NULL, \
+        `latburst` double DEFAULT '0.0' NOT NULL, \
+        `lonburst` double DEFAULT '0.0' NOT NULL, \
+        PRIMARY KEY (id) \
+        )")
+    print("Datenbank Sonden Statistiken wurde erstellt")    
