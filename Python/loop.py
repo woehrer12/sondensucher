@@ -11,6 +11,7 @@ import Database
 import config
 import API
 import mqtt
+import verarbeiten
 
 
 
@@ -37,16 +38,17 @@ Database.statistiken()
 print("Datenbanken erstellt")
 
 #API starten
-#t1 = API.app.run()
-#t1 = start()
+t1 = API.app.run()
+t1 = start()
 
 #MQTT starten
-#t2 = mqtt.run()
-#t2 = start()
+t2 = mqtt.run()
+t2 = start()
 
 
 while True:
     getcsv.csv()
     hoehen.hoehe()
+    verarbeiten.sonden()
     print("loop")
     time.sleep(30)
