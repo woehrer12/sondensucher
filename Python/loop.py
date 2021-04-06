@@ -4,7 +4,7 @@ import sys
 import configparser
 
 #Import eigene Module
-import getcsv
+import getradiosondycsv
 import time
 import hoehen
 import Database
@@ -24,8 +24,8 @@ try:
     config.read('config/config.ini')
     conf = config['DEFAULT']
 except:
-    print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
+    print("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
 
 
 
@@ -40,13 +40,17 @@ print("Datenbanken erstellt")
 # t1.start()
 
 #MQTT starten
-t2 = threading.Thread(target=mqtt.run)
-t2.start()
+if conf['mqtt-sondensucher.de'] == "1":
+    t2 = threading.Thread(target=mqtt.run)
+    t2.start()
 
 
 while True:
-    getcsv.csv()
-    hoehen.hoehe()
+    print()
+    if conf['getradiosondycsv'] == "1":
+        getradiosondycsv.csv()
+    if conf['gethoehen'] == "1":
+        hoehen.hoehe()
     verarbeiten.sonden()
     print("loop")
     time.sleep(30)

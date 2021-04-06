@@ -7,7 +7,7 @@ import sys
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-handler = logging.FileHandler("logs/getcsv.log")
+handler = logging.FileHandler("logs/getradiosondycsv.log")
 formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
 handler.setFormatter(formatter)
 handler.setLevel(logging.INFO)
@@ -20,8 +20,8 @@ try:
     config.read('config/config.ini')
     conf = config['DEFAULT']
 except:
-    print("Unexpected error Config lesen getcsv.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Config lesen getcsv.py:" + str(sys.exc_info()))
+    print("Unexpected error Config lesen getradiosondycsv.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Config lesen getradiosondycsv.py:" + str(sys.exc_info()))
 
 
 try:
@@ -35,8 +35,8 @@ try:
         )
     mycursor = mydb.cursor() 
 except:
-    print("Unexpected error Datenbankverbindung getcsv.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung getcsv.py:" + str(sys.exc_info()))
+    print("Unexpected error Datenbankverbindung getradiosondycsv.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Datenbankverbindung getradiosondycsv.py:" + str(sys.exc_info()))
 
 #Header fälschen
 headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '\
