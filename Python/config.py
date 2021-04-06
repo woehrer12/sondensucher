@@ -1,5 +1,7 @@
 import sys
 import logging
+import configparser
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -32,3 +34,5 @@ def config():
     except:
         print("Unexpected error Config anlegen Database.py:" + str(sys.exc_info()))
         logger.error("Unexpected error Config anlegen Database.py:" + str(sys.exc_info()))
+
+config()
