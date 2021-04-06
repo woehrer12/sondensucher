@@ -86,7 +86,7 @@ def sonden():
         print("Unexpected error Datenbank Sonden anlegen Database.py:" + str(sys.exc_info()))
         logger.error("Unexpected error Datenbank Sonden anlegen Database.py:" + str(sys.exc_info()))
 
-def Hoehen():
+def hoehen():
     try:
         #Datenbank Höhen anlegen
         if checkTableExists(mydb,"hoehen"):
@@ -107,7 +107,7 @@ def Hoehen():
         print("Unexpected error Datenbank Höhen anlegen Database.py:" + str(sys.exc_info()))
         logger.error("Unexpected error Datenbank Höhen anlegen Database.py:" + str(sys.exc_info()))
 
-def Statistiken():
+def statistiken():
     try:
         #Datenbank sonden anlegen
         if checkTableExists(mydb,"sonden_stats"):
@@ -134,6 +134,3 @@ def Statistiken():
 
     #TODO doppelte finden
 
-sonden()
-Hoehen()
-Statistiken()

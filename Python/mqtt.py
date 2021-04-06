@@ -84,11 +84,11 @@ def run():
     client.loop_forever()
 
 
-if __name__ == '__main__':
-    while True:
-        try:
-            run()
-        except:
-            print("Unexpected error mqtt.py:" + str(sys.exc_info()))
-            logger.error("Unexpected error mqtt.py:" + str(sys.exc_info()))
-            time.sleep(60)
+# if __name__ == '__main__':
+#     while True:
+#         try:
+#             run()
+#         except:
+#             print("Unexpected error mqtt.py:" + str(sys.exc_info()))
+#             logger.error("Unexpected error mqtt.py:" + str(sys.exc_info()))
+#             time.sleep(60)

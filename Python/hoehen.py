@@ -106,5 +106,3 @@ def hoehe():
     except:
         print("Unexpected error hoehen() hoehen.py:" + str(sys.exc_info()))
         return None
-
-hoehe()

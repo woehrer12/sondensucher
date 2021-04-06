@@ -1,6 +1,7 @@
 import threading
 import logging
 import sys
+import configparser
 
 #Import eigene Module
 import getcsv
@@ -15,6 +16,7 @@ import mqtt
 
 #Konfigdatei erstellen
 config.config()
+print("Config Datei erstellt")
 
 #Konfigdatei initialisieren
 try:
@@ -29,17 +31,18 @@ except:
 
 
 #Datenbanken anlegen
-Database.Database_sonden()
-Database.Database_Hoehen()
-Database.Database_Statistiken()
+Database.sonden()
+Database.hoehen()
+Database.statistiken()
+print("Datenbanken erstellt")
 
 #API starten
-t1 = API.app.run()
-t1 = start()
+#t1 = API.app.run()
+#t1 = start()
 
 #MQTT starten
-t2 = mqtt.run()
-t2 = start()
+#t2 = mqtt.run()
+#t2 = start()
 
 
 while True:

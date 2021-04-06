@@ -75,6 +75,3 @@ def csv():
     except:
         print("Unexpected error csv.py:" + str(sys.exc_info()))
         logger.error("Unexpected error csv.py:" + str(sys.exc_info()))
-
-
-csv()

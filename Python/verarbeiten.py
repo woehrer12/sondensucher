@@ -57,5 +57,3 @@ def sonden():
         logger.error("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
         return None
 
-
-sonden()
