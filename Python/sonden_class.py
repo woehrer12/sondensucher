@@ -224,7 +224,7 @@ class Sonden:
     def setburst(self):
         Sonden.refresh(self)
         mycursor = mydb.cursor()
-        mycursor.execute("UPDATE sonden_stats SET burst = TRUE, latburst = '" + Sonden.lat + "', lonburst = '" + Sonden.lon + "' WHERE sondenid = '" + Sonden.sondenid + "'")
+        mycursor.execute("UPDATE sonden_stats SET burst = TRUE, latburst = '" + str(Sonden.lat) + "', lonburst = '" + str(Sonden.lon) + "' WHERE sondenid = '" + Sonden.sondenid + "'")
         mydb.commit()
         
     def startort(self):
