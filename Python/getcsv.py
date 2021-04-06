@@ -14,13 +14,18 @@ handler.setLevel(logging.INFO)
 logger.addHandler(handler)
 logger.info("Skript gestartet")
 
-#Config Datei auslesen
-config = configparser.ConfigParser()
-config.read('dbconfig.ini')
-conf = config['DEFAULT']
-
-#Datenbankverbindung herstellen
 try:
+    #Config Datei auslesen
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    conf = config['DEFAULT']
+except:
+    print("Unexpected error Config lesen getcsv.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Config lesen getcsv.py:" + str(sys.exc_info()))
+
+
+try:
+    #Datenbankverbindung herstellen
     mydb = mysql.connector.connect(
         host=conf['dbpfad'],
         user=conf['dbuser'],
@@ -28,9 +33,10 @@ try:
         database=conf['dbname'],
         auth_plugin='mysql_native_password'
         )
-    mycursor = mydb.cursor()
+    mycursor = mydb.cursor() 
 except:
-    print("Unexpected error:" + str(sys.exc_info()[0]))
+    print("Unexpected error Datenbankverbindung getcsv.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Datenbankverbindung getcsv.py:" + str(sys.exc_info()))
 
 #Header fälschen
 headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '\
@@ -48,6 +54,8 @@ def csv():
         antwort = httpx.text
 
         #print(antwort)
+        
+        logging.info("Radiosondy CSV abgerufen")
 
         for line in antwort.split('\n'):
             #print(line)
@@ -65,8 +73,8 @@ def csv():
                 mycursor.execute(payload)        
                 mydb.commit()
     except:
-        print("Unexpected error:" + str(sys.exc_info()[0]))
-        logger.error("Unexpected error:" + str(sys.exc_info()[0]))
+        print("Unexpected error csv.py:" + str(sys.exc_info()))
+        logger.error("Unexpected error csv.py:" + str(sys.exc_info()))
 
 
 csv()

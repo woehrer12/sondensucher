@@ -1,4 +1,4 @@
-dbconfig.ini
+*.ini
 Python/__pycache__/*
 */server.crt
 .gitignore

@@ -4,20 +4,40 @@ import functions
 import time
 import re
 import logging
+import sys
 import configparser
 
-#Config Datei auslesen
-config = configparser.ConfigParser()
-config.read('dbconfig.ini')
-conf = config['DEFAULT']
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler("logs/sonden_class.log")
+formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
+handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
+logger.addHandler(handler)
 
-mydb = mysql.connector.connect(
-  host=conf['dbpfad'],
-  user=conf['dbuser'],
-  password=conf['dbpassword'],
-  database=conf['dbname'],
-  auth_plugin='mysql_native_password'
-)
+try:
+    #Config Datei auslesen
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    conf = config['DEFAULT']
+except:
+    print("Unexpected error Config lesen sonden_class.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Config lesen sonden_class.py:" + str(sys.exc_info()))
+
+
+try:
+    #Datenbankverbindung herstellen
+    mydb = mysql.connector.connect(
+        host=conf['dbpfad'],
+        user=conf['dbuser'],
+        password=conf['dbpassword'],
+        database=conf['dbname'],
+        auth_plugin='mysql_native_password'
+        )
+    mycursor = mydb.cursor() 
+except:
+    print("Unexpected error Datenbankverbindung sonden_class.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Datenbankverbindung sonden_class.py:" + str(sys.exc_info()))
 
 logger = logging.getLogger()
 

@@ -4,30 +4,45 @@ import json
 from flask import request, jsonify
 import mysql.connector
 import configparser
+import logging
+import sys
 
 from sonden_class import Sonden
 sonde = Sonden()
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler("logs/API.log")
+formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
+handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
+logger.addHandler(handler)
+
 app = flask.Flask(__name__)
 #TODO DEBUG deaktivieren
 app.config["DEBUG"] = True
+try:
+    #Config Datei auslesen
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    conf = config['DEFAULT']
+except:
+    print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
 
-#Config Datei auslesen
-config = configparser.ConfigParser()
-config.read('dbconfig.ini')
-conf = config['DEFAULT']
-
-#Datenbankverbindung herstellen
-mydb = mysql.connector.connect(
-    host=conf['dbpfad'],
-    user=conf['dbuser'],
-    password=conf['dbpassword'],
-    database=conf['dbname'],
-    auth_plugin='mysql_native_password'
-    )
-mycursor = mydb.cursor() 
-
-# Create some test data for our catalog in the form of a list of dictionaries.
+try:
+    #Datenbankverbindung herstellen
+    mydb = mysql.connector.connect(
+        host=conf['dbpfad'],
+        user=conf['dbuser'],
+        password=conf['dbpassword'],
+        database=conf['dbname'],
+        auth_plugin='mysql_native_password'
+        )
+    mycursor = mydb.cursor() 
+except:
+    print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
 
 @app.route('/', methods=['GET'])
 def home():
