@@ -18,7 +18,7 @@ logger.addHandler(handler)
 try:
     #Config Datei auslesen
     config = configparser.ConfigParser()
-    config.read('config.ini')
+    config.read('config/config.ini')
     conf = config['DEFAULT']
 except:
     print("Unexpected error Config lesen verarbeiten.py:" + str(sys.exc_info()))

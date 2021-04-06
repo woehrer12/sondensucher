@@ -17,7 +17,7 @@ def config():
     try:
         # Config Datei anlegen und auslesen
         config = configparser.ConfigParser()
-        if os.path.isfile("config.ini"):
+        if os.path.isfile("config/config.ini"):
             ("Config File gefunden")
         else:
             print("Config File angelegt")
@@ -26,10 +26,10 @@ def config():
                             'dbpassword': 'sondensucher',
                             'dbname': 'sonden'}
 
-            with open('config.ini', 'w') as configfile:
+            with open('config/config.ini', 'w') as configfile:
                 config.write(configfile)
 
-        config.read('config.ini')
+        config.read('config/config.ini')
         conf = config['DEFAULT']
     except:
         print("Unexpected error Config anlegen Database.py:" + str(sys.exc_info()))

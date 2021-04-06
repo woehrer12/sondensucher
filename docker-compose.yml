@@ -30,12 +30,14 @@ services:
     sondensucher:
         depends_on:
             - db
+            - mosquitto
         image: sondensucher
         #restart: always
         ports:
             - 5000:5000
         volumes: 
             - ./logs:/logs
+            - ./config:/config
 
     sondenweb:
         image: sondenweb
@@ -47,6 +49,12 @@ services:
             - APP_KEY=SomeRandomStringToAddSecurity123
             - APP_ENV=development
             - APP_DEBUG=true
+    
+    mosquitto:
+        image: eclipse-mosquitto:latest
+        ports:
+            - 1883:1883
+            - 9001:9001
     
     #TODO Mosquitto Docker einfügen
 volumes:

@@ -10,6 +10,8 @@ import sys
 from sonden_class import Sonden
 sonde = Sonden()
 
+#TODO API läuft nicht im Docker
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 handler = logging.FileHandler("logs/API.log")
@@ -24,7 +26,7 @@ app.config["DEBUG"] = True
 try:
     #Config Datei auslesen
     config = configparser.ConfigParser()
-    config.read('config.ini')
+    config.read('config/config.ini')
     conf = config['DEFAULT']
 except:
     print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
