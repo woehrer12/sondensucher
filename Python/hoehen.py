@@ -53,7 +53,6 @@ def hoehe():
         while i < länge:
             request1 = request[i]
             payload = payload + str(request1[1]) + "," + str(request1[2]) + "|"
-            print(payload)
             s = str(request1[0])
             mycursor.execute("DELETE FROM hoehen WHERE Id = "+ str(request1[0]))
             i = i + 1
@@ -64,27 +63,27 @@ def hoehe():
         quelle = "eudem25m"
 
         if response.status_code == 200:
-            print('Success!')
+            #print('Success!')
             
             #print(response.text)
             
             ok = response.json()['status']
-            print(ok)
+            #print(ok)
             
             j = 0
             k = len(response.json()['results'])
             while j < k:
                 if ok == "OK":
-                    print("Abfrage war OK")
+                    #print("Abfrage war OK")
                         
                     lat = response.json()['results'][j]['location']['lat']
-                    print("Lat", lat)
+                    #print("Lat", lat)
                 
                     lng = response.json()['results'][j]['location']['lng']
-                    print("Lon", lng)  
+                    #print("Lon", lng)  
                 
                     elevation = response.json()['results'][j]['elevation']
-                    print("Höhe", elevation)
+                    #print("Höhe", elevation)
         
                     #Prüfen ob schon in Datenbank vorhanden
                     query = "SELECT lat, lon FROM hoehen WHERE lat LIKE " + str(lat) + " AND lon LIKE " + str(lng) + " LIMIT 25"

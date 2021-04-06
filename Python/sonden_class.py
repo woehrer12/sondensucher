@@ -202,7 +202,7 @@ class Sonden:
         return(max(data[0]))
 
     def checkburst(self):
-        print(Sonden.vgeschw)
+        #print(Sonden.vgeschw)
         if float(Sonden.vgeschw) < -2.0 and float(Sonden.hoehe) > 5000 :
             Sonden.setburst(self)
 
@@ -211,13 +211,13 @@ class Sonden:
         mycursor.execute("SELECT burst FROM sonden_stats WHERE sondenid = '" + Sonden.sondenid + "'")
         sondendaten = mycursor.fetchone()
         mycursor.close()
-        print(Sonden.sondenid)
+        #print(Sonden.sondenid)
         #if isinstance(sondendaten, list): 
         if sondendaten[0]:
-            print("Burst")
+            #print("Burst")
             return True
         else:
-            print("Not Burst")	
+            #print("Not Burst")	
             return False
 	
     
@@ -236,8 +236,8 @@ class Sonden:
         mycursor = mydb.cursor()
         mycursor.execute("SELECT lat, lon FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' ORDER BY `sonden`.`date` ASC LIMIT 1")
         sondendaten = mycursor.fetchone()
-        print("Lat: " + sondendaten[0])
-        print("Lon: " + sondendaten[1])
+        #print("Lat: " + sondendaten[0])
+        #print("Lon: " + sondendaten[1])
         k = len(startorte)
         i = 0
         #TODO optimieren. Evtl SQL Abfrage direkt mit Koordinaten machen
@@ -274,7 +274,7 @@ class Sonden:
         mycursor = mydb.cursor() 
         mycursor.execute("SELECT Hoehe FROM hoehen WHERE Lat = " + str(Sonden.lat) + " AND  Lon = " + str(Sonden.lon))
         hoehe = mycursor.fetchone()
-        print(hoehe)
+        #print(hoehe)
         if hoehe == None:
             print("Höhe nicht bekannt")
             mycursor.execute("INSERT INTO hoehen (lat, lon, hoehe, quelle) VALUES (%s,%s,%s,%s)",(str(Sonden.lat),str(Sonden.lon),"0","sonden_class.py",))

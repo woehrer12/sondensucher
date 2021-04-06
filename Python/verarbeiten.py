@@ -49,8 +49,8 @@ def sonden():
 
     while j <anzahlids:
         sonde.setid(sondenids[j])
-        print(sonde.getgroudhohe())
-        print(type(sonde.getgroudhohe()))
+        #print(sonde.getgroudhohe())
+        #print(type(sonde.getgroudhohe()))
         j = j + 1
   except:
         print("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
