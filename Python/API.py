@@ -95,4 +95,5 @@ def api_id():
     # Use the jsonify function from Flask to convert our list of
     # Python dictionaries to the JSON format.
 
-app.run()
+#TODO testen
+app.run(host='0.0.0.0', debug=True, port=5000)

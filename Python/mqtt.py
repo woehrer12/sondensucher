@@ -1,10 +1,12 @@
 # python3.6
+#https://www.emqx.io/blog/how-to-use-mqtt-in-python
 import mysql.connector
 import configparser
 import json
 import logging
 import sys
 import time
+import random
 
 from paho.mqtt import client as mqtt_client
 
@@ -44,7 +46,7 @@ broker = 'sondensucher.de'
 port = 1883
 topic = "packet"
 # generate client ID with pub prefix randomly
-client_id = 'phpMQTT-subscriber'
+client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'sondensucher'
 password = 'sondensucher'
 
@@ -53,7 +55,7 @@ def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
             pass
-            #print("Connected to MQTT Broker!")
+            print("Connected to MQTT Broker!")
 
         else:
             print("Failed to connect, return code %d\n", rc)
@@ -68,16 +70,16 @@ def connect_mqtt() -> mqtt_client:
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-        message = json.loads(msg.payload.decode())
-        payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES \
-        ('" + message["id"] + "', " + str(message["lat"]) + ", " + str(message["lon"]) + ", " + str(message["alt"]) + ", " + str(message["hs"]) + ", " + str(message["vs"]) + ", \
-            " + str(message["dir"]) + ", " + str(message["freq"]) + ", " + str(message["time"]) + ", '" + message["ser"] + "')"
-        mycursor.execute(payload)        
-        mydb.commit()
+        # message = json.loads(msg.payload.decode())
+        # payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES \
+        # ('" + message["id"] + "', " + str(message["lat"]) + ", " + str(message["lon"]) + ", " + str(message["alt"]) + ", " + str(message["hs"]) + ", " + str(message["vs"]) + ", \
+        #     " + str(message["dir"]) + ", " + str(message["freq"]) + ", " + str(message["time"]) + ", '" + message["ser"] + "')"
+        # mycursor.execute(payload)        
+        # mydb.commit()
     client.subscribe(topic)
     client.on_message = on_message
 
-
+#TODO MQTT ruft nur einmal ab
 def run():
     client = connect_mqtt()
     subscribe(client)
@@ -92,3 +94,5 @@ def run():
 #             print("Unexpected error mqtt.py:" + str(sys.exc_info()))
 #             logger.error("Unexpected error mqtt.py:" + str(sys.exc_info()))
 #             time.sleep(60)
+
+#run()
