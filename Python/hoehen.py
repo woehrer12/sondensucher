@@ -4,40 +4,10 @@ import requests
 import sys
 import logging
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler("logs/hoehen.log")
-formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
-handler.setFormatter(formatter)
-handler.setLevel(logging.INFO)
-logger.addHandler(handler)
-logger.info("Skript gestartet")
-
-try:
-    #Config Datei auslesen
-    config = configparser.ConfigParser()
-    config.read('config/config.ini')
-    conf = config['DEFAULT']
-except:
-    print("Unexpected error Config lesen hoehen.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Config lesen hoehen.py:" + str(sys.exc_info()))
-
-try:
-    #Datenbankverbindung herstellen
-    mydb = mysql.connector.connect(
-        host=conf['dbpfad'],
-        user=conf['dbuser'],
-        password=conf['dbpassword'],
-        database=conf['dbname'],
-        auth_plugin='mysql_native_password'
-        )
-    mycursor = mydb.cursor() 
-except:
-    print("Unexpected error Datenbankverbindung hoehen.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung hoehen.py:" + str(sys.exc_info()))
-
-def hoehe():
+def hoehe(mydb):
     try:
+        mycursor = mydb.cursor() 
+        logging.basicConfig(filename='logs/hoehen.log', level=logging.INFO)
         payload = ""
         #Abfrage nach Höhen mir ?
         #TODO Exeption Handling einbauen wegen verlieren der Verbindung zur Datenbank
@@ -104,4 +74,5 @@ def hoehe():
             print('Not Found.')
     except:
         print("Unexpected error hoehen() hoehen.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error hoehen.py:" + str(sys.exc_info()))
         return None

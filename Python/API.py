@@ -8,6 +8,7 @@ import logging
 import sys
 
 from sonden_class import Sonden
+
 sonde = Sonden()
 
 logger = logging.getLogger()
@@ -43,6 +44,9 @@ try:
 except:
     print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
     logger.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+
+
+
 
 @app.route('/', methods=['GET'])
 def home():
@@ -98,5 +102,4 @@ def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
 
-#TODO testen
 app.run(host='0.0.0.0', debug=True, port=5000)

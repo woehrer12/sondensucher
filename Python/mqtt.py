@@ -10,38 +10,6 @@ import random
 
 from paho.mqtt import client as mqtt_client
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler("logs/mqtt.log")
-formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
-handler.setFormatter(formatter)
-handler.setLevel(logging.INFO)
-logger.addHandler(handler)
-logger.info("Skript gestartet")
-
-try:
-    #Config Datei auslesen
-    config = configparser.ConfigParser()
-    config.read('config/config.ini')
-    conf = config['DEFAULT']
-except:
-    print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
-
-try:
-    #Datenbankverbindung herstellen
-    mydb = mysql.connector.connect(
-        host=conf['dbpfad'],
-        user=conf['dbuser'],
-        password=conf['dbpassword'],
-        database=conf['dbname'],
-        auth_plugin='mysql_native_password'
-        )
-    mycursor = mydb.cursor() 
-except:
-    print("Unexpected error Datenbankverbindung Database.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung Database.py:" + str(sys.exc_info()))
-
 broker = 'sondensucher.de'
 port = 1883
 topic = "packet"
@@ -67,7 +35,8 @@ def connect_mqtt() -> mqtt_client:
     return client
 
 
-def subscribe(client: mqtt_client):
+def subscribe(client: mqtt_client,mydb):
+    mycursor = mydb.cursor()
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
         message = json.loads(msg.payload.decode())
@@ -79,9 +48,9 @@ def subscribe(client: mqtt_client):
     client.subscribe(topic)
     client.on_message = on_message
 
-def run():
+def run(mydb):
     client = connect_mqtt()
-    subscribe(client)
+    subscribe(client,mydb)
     client.loop_forever()
 
 

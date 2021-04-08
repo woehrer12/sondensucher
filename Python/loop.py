@@ -2,6 +2,7 @@ import threading
 import logging
 import sys
 import configparser
+import mysql.connector
 
 #Import eigene Module
 import getradiosondycsv
@@ -12,7 +13,8 @@ import config
 import mqtt
 import verarbeiten
 
-
+logging.basicConfig(format='%(asctime)s:%(levelname)s-%(message)s')
+logging.basicConfig(filename='logs/loop.log', level=logging.INFO)
 
 #Konfigdatei erstellen
 config.config()
@@ -28,11 +30,25 @@ except:
     logger.error("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
 
 
+#Datenbank initialisieren
+try:
+    #Datenbankverbindung herstellen
+    mydb = mysql.connector.connect(
+        host=conf['dbpfad'],
+        user=conf['dbuser'],
+        password=conf['dbpassword'],
+        database=conf['dbname'],
+        auth_plugin='mysql_native_password'
+        )
+    mycursor = mydb.cursor() 
+except:
+    print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
 
 #Datenbanken anlegen
-Database.sonden()
-Database.hoehen()
-Database.statistiken()
+Database.sonden(mydb)
+Database.hoehen(mydb)
+Database.statistiken(mydb)
 print("Datenbanken erstellt")
 
 #API starten
@@ -41,16 +57,17 @@ print("Datenbanken erstellt")
 
 #MQTT starten
 if conf['mqtt-sondensucher.de'] == "1":
-    t2 = threading.Thread(target=mqtt.run)
+    t2 = threading.Thread(target=mqtt.run(mydb))
     t2.start()
 
 
 while True:
-    print()
+    logging.basicConfig(filename='logs/loop.log', level=logging.INFO)
     if conf['getradiosondycsv'] == "1":
-        getradiosondycsv.csv()
+        getradiosondycsv.csv(mydb)
     if conf['gethoehen'] == "1":
-        hoehen.hoehe()
-    verarbeiten.sonden()
+        hoehen.hoehe(mydb)
+    verarbeiten.sonden(mydb)
     print("loop")
+    logging.info("loop")
     time.sleep(30)

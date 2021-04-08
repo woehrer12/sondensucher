@@ -5,39 +5,6 @@ import configparser
 import logging
 import sys
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler("logs/getradiosondycsv.log")
-formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
-handler.setFormatter(formatter)
-handler.setLevel(logging.INFO)
-logger.addHandler(handler)
-logger.info("Skript gestartet")
-
-try:
-    #Config Datei auslesen
-    config = configparser.ConfigParser()
-    config.read('config/config.ini')
-    conf = config['DEFAULT']
-except:
-    print("Unexpected error Config lesen getradiosondycsv.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Config lesen getradiosondycsv.py:" + str(sys.exc_info()))
-
-
-try:
-    #Datenbankverbindung herstellen
-    mydb = mysql.connector.connect(
-        host=conf['dbpfad'],
-        user=conf['dbuser'],
-        password=conf['dbpassword'],
-        database=conf['dbname'],
-        auth_plugin='mysql_native_password'
-        )
-    mycursor = mydb.cursor() 
-except:
-    print("Unexpected error Datenbankverbindung getradiosondycsv.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung getradiosondycsv.py:" + str(sys.exc_info()))
-
 #Header fälschen
 headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '\
            'AppleWebKit/537.36 (KHTML, like Gecko) '\
@@ -47,8 +14,12 @@ url = "https://radiosondy.info/export/csv_live.php"
 
 #sondenid; lat; lon; hoehe; geschw; vgeschw; richtung; freq; sondetime
 
-def csv():
+def csv(mydb):
     try:
+        logging.basicConfig(filename='logs/getradiosondycsv.log', level=logging.INFO)
+
+        mycursor = mydb.cursor()
+
         httpx = requests.get(url, headers=headers)
 
         antwort = httpx.text
@@ -74,4 +45,4 @@ def csv():
                 mydb.commit()
     except:
         print("Unexpected error csv.py:" + str(sys.exc_info()))
-        logger.error("Unexpected error csv.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error getradiosondycsv.py:" + str(sys.exc_info()))

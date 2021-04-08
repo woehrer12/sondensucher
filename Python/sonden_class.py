@@ -7,23 +7,14 @@ import logging
 import sys
 import configparser
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler("logs/sonden_class.log")
-formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
-handler.setFormatter(formatter)
-handler.setLevel(logging.INFO)
-logger.addHandler(handler)
-
 try:
     #Config Datei auslesen
     config = configparser.ConfigParser()
     config.read('config/config.ini')
     conf = config['DEFAULT']
 except:
-    print("Unexpected error Config lesen sonden_class.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Config lesen sonden_class.py:" + str(sys.exc_info()))
-
+    print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
 
 try:
     #Datenbankverbindung herstellen
@@ -36,14 +27,10 @@ try:
         )
     mycursor = mydb.cursor() 
 except:
-    print("Unexpected error Datenbankverbindung sonden_class.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung sonden_class.py:" + str(sys.exc_info()))
+    print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
 
-logger = logging.getLogger()
-
-
-class Sonden:
-
+class Sonden():
     sondenid = ""
     lat = 0.0
     lon = 0.0
@@ -74,8 +61,9 @@ class Sonden:
 
 
     def setid(self, id):
+        mycursor = mydb.cursor()
         Sonden.clear(self)
-        logger.info("setid id = " + id)
+        logging.info("setid id = " + id)
         text = id
         if text.isalnum() and text[0].isalpha() and text[6].isdecimal() and len(text) > 7:
             mycursor = mydb.cursor()
@@ -84,7 +72,6 @@ class Sonden:
             logging.info(query)
             mycursor.execute(query)
             data = mycursor.fetchall()
-            mycursor.close()
             if data != []:
                 #Statistiken erstellen
                 Sonden.set_stats(self)
@@ -109,7 +96,6 @@ class Sonden:
         query = "SELECT sondenid, lat, lon, hoehe, server, vgeschw, freq, richtung, geschw, sondetime FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' ORDER BY `sonden`.`date` DESC LIMIT 1"
         mycursor.execute(query)
         data = mycursor.fetchall()
-        mycursor.close()
         sondendaten = data[0]
         Sonden.sondenid = sondendaten[0]
         Sonden.lat = sondendaten[1]
