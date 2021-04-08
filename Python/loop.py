@@ -44,7 +44,7 @@ try:
     mycursor = mydb.cursor() 
 except:
     print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
+    logging.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
 
 #Datenbanken anlegen
 Database.sonden(mydb)

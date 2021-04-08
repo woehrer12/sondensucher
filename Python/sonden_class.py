@@ -14,7 +14,7 @@ try:
     conf = config['DEFAULT']
 except:
     print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
+    logging.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
 
 try:
     #Datenbankverbindung herstellen
@@ -28,7 +28,7 @@ try:
     mycursor = mydb.cursor() 
 except:
     print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+    logging.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
 
 class Sonden():
     sondenid = ""
