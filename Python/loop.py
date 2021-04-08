@@ -12,6 +12,7 @@ import Database
 import config
 import mqtt
 import verarbeiten
+import getsondehub
 
 logging.basicConfig(format='%(asctime)s:%(levelname)s-%(message)s')
 logging.basicConfig(filename='logs/loop.log', level=logging.INFO)
@@ -67,6 +68,8 @@ while True:
         getradiosondycsv.csv(mydb)
     if conf['gethoehen'] == "1":
         hoehen.hoehe(mydb)
+    if conf['getgetsondehub'] == "1":
+        getsondehub.csv(mydb)
     verarbeiten.sonden(mydb)
     print("loop")
     logging.info("loop")
