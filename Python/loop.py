@@ -68,7 +68,7 @@ while True:
         getradiosondycsv.csv(mydb)
     if conf['gethoehen'] == "1":
         hoehen.hoehe(mydb)
-    if conf['getgetsondehub'] == "1":
+    if conf['getsondehub'] == "1":
         getsondehub.csv(mydb)
     verarbeiten.sonden(mydb)
     print("loop")
