@@ -64,6 +64,8 @@ if conf['mqtt-sondensucher.de'] == "1":
 
 while True:
     logging.basicConfig(filename='logs/loop.log', level=logging.INFO)
+    print("loop")
+    logging.info("loop")
     if conf['getradiosondycsv'] == "1":
         getradiosondycsv.csv(mydb)
     if conf['gethoehen'] == "1":
@@ -71,6 +73,4 @@ while True:
     if conf['getsondehub'] == "1":
         getsondehub.csv(mydb)
     verarbeiten.sonden(mydb)
-    print("loop")
-    logging.info("loop")
     time.sleep(30)
