@@ -10,8 +10,6 @@ import sys
 from sonden_class import Sonden
 sonde = Sonden()
 
-#TODO API läuft nicht im Docker
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 handler = logging.FileHandler("logs/API.log")
