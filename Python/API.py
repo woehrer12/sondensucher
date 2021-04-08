@@ -95,5 +95,10 @@ def api_id():
     # Use the jsonify function from Flask to convert our list of
     # Python dictionaries to the JSON format.
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return "<h1>404</h1><p>The resource could not be found.</p>", 404
+
+
 #TODO testen
 app.run(host='0.0.0.0', debug=True, port=5000)
