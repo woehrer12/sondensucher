@@ -60,7 +60,7 @@ print("Datenbanken erstellt")
 if conf['mqtt-sondensucher.de'] == "1":
     t2 = threading.Thread(target=mqtt.run(mydb))
     t2.start()
-
+#TODO eigenen Mosquitto auch abfragen
 
 while True:
     logging.basicConfig(filename='logs/loop.log', level=logging.INFO)

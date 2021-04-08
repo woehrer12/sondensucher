@@ -9,8 +9,7 @@ def hoehe(mydb):
         mycursor = mydb.cursor() 
         logging.basicConfig(filename='logs/hoehen.log', level=logging.INFO)
         payload = ""
-        #Abfrage nach Höhen mir ?
-        #TODO Exeption Handling einbauen wegen verlieren der Verbindung zur Datenbank
+        #Abfrage nach Höhen mir quelle
         mycursor.execute("SELECT id, lat, lon FROM hoehen WHERE quelle = 'sonden_class.py' LIMIT 50")
         request = mycursor.fetchall()
         länge = len(request)

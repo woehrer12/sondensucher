@@ -68,7 +68,7 @@ def api_id():
         id = request.args['id']
     else:
         return "Error: No id field provided. Please specify an id."
-
+    logging.info("Sonde abgerufen" + id)
     # Create an empty list for our results
     results = []
 
