@@ -16,3 +16,7 @@ http://127.0.0.1:5000/api/v1/resources/sonden?id={id}
 Beispiel:
 
 http://127.0.0.1:5000/api/v1/resources/sonden?id=P2830105
+
+Abruf für alle aktiven Sonden:
+
+http://127.0.0.1:5000/api/v1/resources/sonden/all
