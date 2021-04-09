@@ -73,6 +73,7 @@ while True:
     if conf['getsondehub'] == "1":
         getsondehub.csv(mydb)
     verarbeiten.sonden(mydb)
+    Database.löschen(mydb)
     time.sleep(30)
 
     #TODO Prediction

@@ -39,17 +39,17 @@ services:
             - ./logs:/logs
             - ./config:/config
 
-    sondenweb:
-        image: sondenweb
-        ports:
-            - "8001:80"
-        volumes:
-            - ./www:/var/www
-        environment:
-            - APP_KEY=SomeRandomStringToAddSecurity123
-            - APP_ENV=development
-            - APP_DEBUG=true
-    
+    # sondenweb:
+    #     image: sondenweb
+    #     ports:
+    #         - "8001:80"
+    #     volumes:
+    #         - ./www:/var/www
+    #     environment:
+    #         - APP_KEY=SomeRandomStringToAddSecurity123
+    #         - APP_ENV=development
+    #         - APP_DEBUG=true
+
     mosquitto:
         image: eclipse-mosquitto:latest
         ports:
