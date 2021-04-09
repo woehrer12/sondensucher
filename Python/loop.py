@@ -10,7 +10,6 @@ import time
 import hoehen
 import Database
 import config
-import mqtt
 import verarbeiten
 import getsondehub
 
@@ -22,7 +21,6 @@ handler.setFormatter(formatter)
 handler.setLevel(logging.INFO)
 logger.addHandler(handler)
 
-#TODO Logs funktionieren nicht
 
 #Konfigdatei erstellen
 config.config()
