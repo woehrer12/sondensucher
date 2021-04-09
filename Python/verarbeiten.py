@@ -13,7 +13,7 @@ def sonden(mydb):
     sondenids = functions.sondenids(mydb)
     anzahlids = len(sondenids)
     j = 0
-
+    logging.info("verarbeiten.py")
 
     
 

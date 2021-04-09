@@ -20,8 +20,7 @@ handler.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 app = flask.Flask(__name__)
-#TODO DEBUG deaktivieren
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 try:
     #Config Datei auslesen
     config = configparser.ConfigParser()
@@ -103,3 +102,5 @@ def page_not_found(e):
 
 
 app.run(host='0.0.0.0', debug=True, port=5000)
+
+#TODO Abfrage für alle aktuellen Sonden

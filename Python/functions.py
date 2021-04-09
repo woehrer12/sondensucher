@@ -22,6 +22,6 @@ def sondenids(mydb):
         return list
     except:
         print("Unexpected error sondenids() functions.py:" + str(sys.exc_info()))
-        logger.error("Unexpected error sondenids() functions.py:" + str(sys.exc_info()))    
+        logging.error("Unexpected error sondenids() functions.py:" + str(sys.exc_info()))    
 
     

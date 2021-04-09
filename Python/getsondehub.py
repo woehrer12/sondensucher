@@ -8,7 +8,6 @@ import datetime
 
 def csv(mydb):
     try:
-        logging.basicConfig(filename='logs/getsondehub.log', level=logging.INFO)
         mycursor = mydb.cursor()
         response = requests.get("https://api.v2.sondehub.org/sondes/telemetry",  timeout=30)
         logging.info(response.url)

@@ -14,8 +14,15 @@ import mqtt
 import verarbeiten
 import getsondehub
 
-logging.basicConfig(format='%(asctime)s:%(levelname)s-%(message)s')
-logging.basicConfig(filename='logs/loop.log', level=logging.INFO)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler("logs/loop.log")
+formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
+handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
+logger.addHandler(handler)
+
+#TODO Logs funktionieren nicht
 
 #Konfigdatei erstellen
 config.config()
@@ -28,7 +35,7 @@ try:
     conf = config['DEFAULT']
 except:
     print("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
+    logging.error("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
 
 
 #Datenbank initialisieren
@@ -47,10 +54,14 @@ except:
     logging.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
 
 #Datenbanken anlegen
-Database.sonden(mydb)
-Database.hoehen(mydb)
-Database.statistiken(mydb)
-print("Datenbanken erstellt")
+try:
+    Database.sonden(mydb)
+    Database.hoehen(mydb)
+    Database.statistiken(mydb)
+    print("Datenbanken erstellt")
+except:
+    print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
+    logging.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
 
 #API starten
 # t1 = threading.Thread(target=API.app.run)
@@ -63,7 +74,6 @@ if conf['mqtt-sondensucher.de'] == "1":
 #TODO eigenen Mosquitto auch abfragen
 
 while True:
-    logging.basicConfig(filename='logs/loop.log', level=logging.INFO)
     print("loop")
     logging.info("loop")
     if conf['getradiosondycsv'] == "1":
@@ -74,3 +84,6 @@ while True:
         getsondehub.csv(mydb)
     verarbeiten.sonden(mydb)
     time.sleep(30)
+
+    #TODO Prediction
+    #TODO Startorte

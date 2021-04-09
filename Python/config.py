@@ -31,4 +31,4 @@ def config():
         conf = config['DEFAULT']
     except:
         print("Unexpected error Config anlegen Database.py:" + str(sys.exc_info()))
-        logger.error("Unexpected error Config anlegen Database.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error Config anlegen Database.py:" + str(sys.exc_info()))

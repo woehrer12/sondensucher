@@ -16,8 +16,6 @@ url = "https://radiosondy.info/export/csv_live.php"
 
 def csv(mydb):
     try:
-        logging.basicConfig(filename='logs/getradiosondycsv.log', level=logging.INFO)
-
         mycursor = mydb.cursor()
 
         httpx = requests.get(url, headers=headers)
