@@ -93,13 +93,13 @@ def run():
         logging.info("MQTT abgeschaltet")
 
 
-# if __name__ == '__main__':
-#     while True:
-#         try:
-#             run()
-#         except:
-#             print("Unexpected error mqtt.py:" + str(sys.exc_info()))
-#             logger.error("Unexpected error mqtt.py:" + str(sys.exc_info()))
-#             time.sleep(60)
+if __name__ == '__main__':
+    while True:
+        try:
+            run()
+        except:
+            print("Unexpected error mqtt.py:" + str(sys.exc_info()))
+            logger.error("Unexpected error mqtt.py:" + str(sys.exc_info()))
+            time.sleep(60)
 
 #run()
