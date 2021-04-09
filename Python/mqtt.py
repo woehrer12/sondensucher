@@ -83,6 +83,7 @@ def subscribe(client: mqtt_client):
     client.on_message = on_message
 
 def run():
+    logging.info("Config auslesen MQTT")
     if conf['mqtt-sondensucher.de'] == "1":
         logging.info("MQTT abfrage läuft")
         client = connect_mqtt()
