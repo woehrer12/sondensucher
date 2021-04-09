@@ -10,6 +10,14 @@ import random
 
 from paho.mqtt import client as mqtt_client
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler("logs/mqtt.log")
+formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
+handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
+logger.addHandler(handler)
+
 #Konfigdatei initialisieren
 try:
     #Config Datei auslesen
