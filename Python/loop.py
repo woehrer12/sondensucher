@@ -63,14 +63,6 @@ except:
     print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
     logging.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
 
-#API starten
-# t1 = threading.Thread(target=API.app.run)
-# t1.start()
-
-#MQTT starten
-if conf['mqtt-sondensucher.de'] == "1":
-    t2 = threading.Thread(target=mqtt.run(mydb))
-    t2.start()
 #TODO eigenen Mosquitto auch abfragen
 
 while True:

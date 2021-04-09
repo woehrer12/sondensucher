@@ -10,6 +10,32 @@ import random
 
 from paho.mqtt import client as mqtt_client
 
+#Konfigdatei initialisieren
+try:
+    #Config Datei auslesen
+    config = configparser.ConfigParser()
+    config.read('config/config.ini')
+    conf = config['DEFAULT']
+except:
+    print("Unexpected error Config lesen mqtt.py:" + str(sys.exc_info()))
+    logging.error("Unexpected error Config lesen mqtt.py:" + str(sys.exc_info()))
+
+
+#Datenbank initialisieren
+try:
+    #Datenbankverbindung herstellen
+    mydb = mysql.connector.connect(
+        host=conf['dbpfad'],
+        user=conf['dbuser'],
+        password=conf['dbpassword'],
+        database=conf['dbname'],
+        auth_plugin='mysql_native_password'
+        )
+    mycursor = mydb.cursor() 
+except:
+    print("Unexpected error Datenbankverbindung mqtt.py:" + str(sys.exc_info()))
+    logging.error("Unexpected error Datenbankverbindung mqtt.py:" + str(sys.exc_info()))
+
 broker = 'sondensucher.de'
 port = 1883
 topic = "packet"
@@ -35,8 +61,7 @@ def connect_mqtt() -> mqtt_client:
     return client
 
 
-def subscribe(client: mqtt_client,mydb):
-    mycursor = mydb.cursor()
+def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
         message = json.loads(msg.payload.decode())
@@ -49,10 +74,14 @@ def subscribe(client: mqtt_client,mydb):
     client.subscribe(topic)
     client.on_message = on_message
 
-def run(mydb):
-    client = connect_mqtt()
-    subscribe(client,mydb)
-    client.loop_forever()
+def run():
+    if conf['mqtt-sondensucher.de'] == "1":
+        logging.info("MQTT abfrage läuft")
+        client = connect_mqtt()
+        subscribe(client)
+        client.loop_forever()
+    else:
+        logging.info("MQTT abgeschaltet")
 
 
 # if __name__ == '__main__':

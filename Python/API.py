@@ -1,4 +1,4 @@
-#https://programminghistorian.org/en/lessons/creating-apis-with-python-and-flask#implementing-our-api
+# https://programminghistorian.org/en/lessons/creating-apis-with-python-and-flask#implementing-our-api
 import flask
 import json
 from flask import request, jsonify
@@ -6,6 +6,7 @@ import mysql.connector
 import configparser
 import logging
 import sys
+import functions
 
 from sonden_class import Sonden
 
@@ -22,7 +23,7 @@ logger.addHandler(handler)
 app = flask.Flask(__name__)
 app.config["DEBUG"] = False
 try:
-    #Config Datei auslesen
+    # Config Datei auslesen
     config = configparser.ConfigParser()
     config.read('config/config.ini')
     conf = config['DEFAULT']
@@ -31,20 +32,19 @@ except:
     logger.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
 
 try:
-    #Datenbankverbindung herstellen
+    # Datenbankverbindung herstellen
     mydb = mysql.connector.connect(
         host=conf['dbpfad'],
         user=conf['dbuser'],
         password=conf['dbpassword'],
         database=conf['dbname'],
         auth_plugin='mysql_native_password'
-        )
-    mycursor = mydb.cursor() 
+    )
+    mycursor = mydb.cursor()
 except:
     print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
-
-
+    logger.error("Unexpected error Datenbankverbindung API.py:" +
+                 str(sys.exc_info()))
 
 
 @app.route('/', methods=['GET'])
@@ -55,7 +55,27 @@ def home():
 
 @app.route('/api/v1/resources/sonden/all', methods=['GET'])
 def api_all():
-    return jsonify(books)
+    results = []
+    sondenids = functions.sondenids(mydb)
+    logging.info("Alle Sonde abgerufen")
+    for id in sondenids:
+        sonde.setid(id)
+        sondejson = [{'id': sonde.getid(),
+                      'lat': sonde.getlat(),
+                      'lon': sonde.getlon(),
+                      'hoehe': sonde.gethoehe(),
+                      'server': sonde.getserver(),
+                      'vgeschw': sonde.getvgeschw(),
+                      'freq': sonde.getfreq(),
+                      'richtung': sonde.getrichtung(),
+                      'geschw': sonde.getgeschw(),
+                      'time': sonde.getsondentime(),
+                      'vgeschposD': sonde.getvgeschposD(),
+                      'vgeschnegD': sonde.getvgeschnegD(),
+                      'maxhoehe': sonde.getmaxhoehe()
+                      }]
+        results = results + sondejson
+    return jsonify(results)
 
 
 @app.route('/api/v1/resources/sonden', methods=['GET'])
@@ -75,26 +95,27 @@ def api_id():
     # IDs are unique, but other fields might return many results
     sonde.setid(id)
     if sonde.isconfirm():
-        results = [{'id' :sonde.getid(),
-                    'lat' :sonde.getlat(),
-                    'lon' :sonde.getlon(),
-                    'hoehe' :sonde.gethoehe(),
-                    'server' :sonde.getserver(),
-                    'vgeschw' :sonde.getvgeschw(),
-                    'freq' :sonde.getfreq(),
-                    'richtung' :sonde.getrichtung(),
-                    'geschw' :sonde.getgeschw(),
-                    'time' :sonde.getsondentime(),
-                    'vgeschposD' :sonde.getvgeschposD(),
-                    'vgeschnegD' :sonde.getvgeschnegD(),
-                    'maxhoehe' :sonde.getmaxhoehe()
+        results = [{'id': sonde.getid(),
+                    'lat': sonde.getlat(),
+                    'lon': sonde.getlon(),
+                    'hoehe': sonde.gethoehe(),
+                    'server': sonde.getserver(),
+                    'vgeschw': sonde.getvgeschw(),
+                    'freq': sonde.getfreq(),
+                    'richtung': sonde.getrichtung(),
+                    'geschw': sonde.getgeschw(),
+                    'time': sonde.getsondentime(),
+                    'vgeschposD': sonde.getvgeschposD(),
+                    'vgeschnegD': sonde.getvgeschnegD(),
+                    'maxhoehe': sonde.getmaxhoehe()
                     }]
         return jsonify(results)
     else:
-         return "Keine Sonde mit der ID gefunden"
+        return "Keine Sonde mit der ID gefunden"
 
     # Use the jsonify function from Flask to convert our list of
     # Python dictionaries to the JSON format.
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -102,5 +123,3 @@ def page_not_found(e):
 
 
 app.run(host='0.0.0.0', debug=True, port=5000)
-
-#TODO Abfrage für alle aktuellen Sonden
