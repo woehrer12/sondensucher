@@ -43,8 +43,7 @@ try:
     mycursor = mydb.cursor()
 except:
     print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung API.py:" +
-                 str(sys.exc_info()))
+    logger.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
 
 
 @app.route('/', methods=['GET'])

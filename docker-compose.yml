@@ -56,6 +56,12 @@ services:
             - 1883:1883
             - 9001:9001
     
+
+    # grafana:
+    #     image: grafana/grafana:latest
+    #     ports:
+    #         - 3000:3000
+    #     user: "104"
     #TODO Grafana Docker einfügen
 volumes:
     db_data: {}

@@ -1,10 +1,11 @@
 #https://github.com/rossengeorgiev/aprs-python
 #TODO mal schauen was hiermit anfangen
 import aprslib
-import logging
 
-logging.basicConfig(level=logging.DEBUG) # level=10
+def callback(packet):
+    print(packet)
 
 AIS = aprslib.IS("N0CALL")
 AIS.connect()
-AIS.consumer(lambda x: None, raw=True)
+# by default `raw` is False, then each line is ran through aprslib.parse()
+AIS.consumer(callback, raw=True)
