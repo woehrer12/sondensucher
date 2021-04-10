@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Sondensucher Webinterface</title>
+</head>
+<body>
+   <h1>{{id}}</h1>
+   <table>
+        <tr>
+           <th>ID </th>
+           <th>{{id}}</th>
+        </tr>
+        <tr>
+            <th>Lat </th>
+            <th>{{lat}}</th>
+        </tr>
+        <tr>
+            <th>Lon </th>
+            <th>{{lon}}</th>
+        </tr>
+        <tr>
+            <th>Höhe </th>
+            <th>{{hoehe}}</th>
+        </tr>
+        <tr>
+            <th>Server </th>
+            <th>{{server}}</th>
+        </tr>
+        <tr>
+            <th>Steigrate </th>
+            <th>{{vgeschw}}</th>
+        </tr>
+        <tr>
+            <th>Frequenz </th>
+            <th>{{freq}}</th>
+        </tr>        
+        <tr>
+            <th>Richtung </th>
+            <th>{{richtung}}</th>
+        </tr>
+        <tr>
+            <th>Geschwindigkeit </th>
+            <th>{{geschw}}</th>
+        </tr>
+        <tr>
+            <th>Sondenzeit </th>
+            <th>{{time}}</th>
+        </tr>
+        <tr>
+            <th>Durchschnittliche Steigrate </th>
+            <th>{{vgeschposD}}</th>
+        </tr>
+        <tr>
+            <th>Durchschnittliche Sinkrate</th>
+            <th>{{vgeschnegD}}</th>
+        </tr>
+        <tr>
+            <th>Maximale Höhe </th>
+            <th>{{maxhoehe}}</th>
+        </tr>
+
+   </table>
+
+
+<a href="https://radiosondy.info/sonde.php?sondenumber={{id}}">Radiosondy</a>
+
+<a href="https://tracker.sondehub.org/?sondehub=1#!mt=osm&mz=8&qm=6_hours&f=RS_{{id}}&q=RS_*;*chase">Sondehub</a>
+
+<a href="https://www.google.com/maps/@{{lat}},{{lon}},14z">Google Maps</a>
+
+</body>
+</html>

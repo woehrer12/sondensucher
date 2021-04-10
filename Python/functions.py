@@ -7,6 +7,7 @@ import sys
 def sondenids(mydb):
     try:
         mycursor = mydb.cursor() 
+        #TODO nicht mehr auf date Abfragen sondern auf Sondetime
         mycursor.execute("SELECT sondenid FROM sonden WHERE date>(NOW() - INTERVAL 30 MINUTE) AND lat!='0' AND sondenid<>'' GROUP BY sondenid")
         sondenids = mycursor.fetchall()
         i = 0

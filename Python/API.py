@@ -46,10 +46,72 @@ except:
     logger.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
 
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def home():
-    return '''<h1>Sondensucher API</h1>
-<p>Abruf von Sonden in einem bestimmten Zeitraum oder von einer bestimmten ID.</p>'''
+    mycursor.execute("SELECT COUNT(id) FROM `sonden`")
+    anzahl = mycursor.fetchone()
+    return flask.render_template('index.html',anzahl = str(anzahl)[1:-2])
+
+
+@app.route('/sonden')
+def sonden():
+    Liste = functions.sondenids(mydb)
+    print(Liste)
+
+    return flask.render_template('sonden.html',Liste = Liste)    
+
+@app.route('/sonden/id', methods=['GET'])
+def sonden_id():
+    # Check if an ID was provided as part of the URL.
+    # If ID is provided, assign it to a variable.
+    # If no ID is provided, display an error in the browser.
+    if 'id' in request.args:
+        id = request.args['id']
+    else:
+        return "Error: No id field provided. Please specify an id."
+    logging.info("Sonde abgerufen" + id)
+    # Create an empty list for our results
+    results = []
+
+    # Loop through the data and match results that fit the requested ID.
+    # IDs are unique, but other fields might return many results
+    sonde.setid(id)
+    if sonde.isconfirm():
+        results = [{'id': sonde.getid(),
+                    'lat': sonde.getlat(),
+                    'lon': sonde.getlon(),
+                    'hoehe': sonde.gethoehe(),
+                    'server': sonde.getserver(),
+                    'vgeschw': sonde.getvgeschw(),
+                    'freq': sonde.getfreq(),
+                    'richtung': sonde.getrichtung(),
+                    'geschw': sonde.getgeschw(),
+                    'time': sonde.getsondentime(),
+                    'vgeschposD': sonde.getvgeschposD(),
+                    'vgeschnegD': sonde.getvgeschnegD(),
+                    'maxhoehe': sonde.getmaxhoehe()
+                    }]
+        return flask.render_template('sondenid.html',   id = sonde.getid(), 
+                                                        lat = sonde.getlat(), 
+                                                        lon = sonde.getlon(), 
+                                                        hoehe = sonde.gethoehe(),
+                                                        server = sonde.getserver(),
+                                                        vgeschw = sonde.getvgeschw(),
+                                                        freq = sonde.getfreq(),
+                                                        richtung = sonde.getrichtung(),
+                                                        geschw = sonde.getgeschw(),
+                                                        time = sonde.getsondentime(),
+                                                        vgeschposD = sonde.getvgeschposD(),
+                                                        vgeschnegD = sonde.getvgeschnegD(),
+                                                        maxhoehe = sonde.getmaxhoehe()
+                                                        )
+    else:
+        return "Keine Sonde mit der ID gefunden"
+
+    # Use the jsonify function from Flask to convert our list of
+    # Python dictionaries to the JSON format.
+
+
 
 
 @app.route('/api/v1/resources/sonden/all', methods=['GET'])

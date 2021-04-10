@@ -7,7 +7,7 @@ import json
 import datetime
 
 def csv(mydb):
-    #try:
+    try:
         mycursor = mydb.cursor()
         response = requests.get("https://api.v2.sondehub.org/sondes/telemetry",  timeout=30)
         logging.info(response.url)
@@ -28,10 +28,10 @@ def csv(mydb):
 
         elif response.status_code == 404:
             print('Not Found.')
-    #except:
-    #    print("Unexpected error getsondehub.py:" + str(sys.exc_info()))
-    #    logging.error("Unexpected error getsondehub.py:" + str(sys.exc_info()))
-    #   return None
+    except:
+        print("Unexpected error getsondehub.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error getsondehub.py:" + str(sys.exc_info()))
+        return None
 
 
 def dateneintrag(mydb,response,i,j):

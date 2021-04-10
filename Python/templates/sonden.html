@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sondensucher Sondenübersicht</title>
+</head>
+<body>
+    <ul id="Liste">
+        {% for item in Liste %}
+            <li><a href="sonden/id?id={{ item }}">{{ item }}</a></li>
+        {% endfor %}
+        </ul>
+</body>
+</html>

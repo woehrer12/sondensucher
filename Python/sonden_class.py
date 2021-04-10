@@ -69,6 +69,7 @@ class Sonden():
             mycursor = mydb.cursor()
             Sonden.sondenid = id
             query = "SELECT sondenid, lat, lon, hoehe, server, vgeschw, freq, richtung, geschw, sondetime FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' ORDER BY `sonden`.`date` DESC LIMIT 1"
+            #TODO Abfrage auf aktuellste sondetime ändern
             logging.info(query)
             mycursor.execute(query)
             data = mycursor.fetchall()
