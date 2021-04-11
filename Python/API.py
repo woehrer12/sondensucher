@@ -52,22 +52,54 @@ def home():
     anzahlsonden = mycursor.fetchone()
     mycursor.execute("SELECT COUNT(id) FROM `hoehen`")
     anzahlhoehen = mycursor.fetchone()
-    return flask.render_template('index.html',anzahlsonden = str(anzahlsonden)[1:-2], anzahlhoehen = str(anzahlhoehen)[1:-2])
+    mycursor.execute("SELECT COUNT(id) FROM `sonden_stats`")
+    anzahlsonden_stats = mycursor.fetchone()
+    mycursor.execute("SELECT COUNT(id) FROM `startorte`")
+    anzahlstartorte = mycursor.fetchone()
+    mycursor.execute("SELECT COUNT(id) FROM `startort_stats`")
+    anzahlstartort_stats = mycursor.fetchone()
+    return flask.render_template('index.html',  anzahlsonden = str(anzahlsonden)[1:-2], 
+                                                anzahlhoehen = str(anzahlhoehen)[1:-2],
+                                                anzahlsonden_stats = str(anzahlsonden_stats)[1:-2],
+                                                anzahlstartorte = str(anzahlstartorte)[1:-2],
+                                                anzahlstartort_stats = str(anzahlstartort_stats)[1:-2],
+                                                )
 
 
 @app.route('/sonden')
 def sonden():
-    Liste = functions.sondenids(mydb,30)
+    #TODO Minute testen
+    minute = 30
+    if 'min' in request.args:
+        minute = request.args['min']
+    print(minute)
+    Liste = []
+    Liste = functions.sondenids(mydb,minute)
     Text = []
     for i in Liste:
         sonde.setid(i)
         Text.append([(i ,"  Startort: " + sonde.getstartort())])
+    print(Liste)
     return flask.render_template('sonden.html',Liste = Liste, Text = Text)
 
 @app.route('/map')
 def map():
+    lat = 48.82823584499739
+    lon = 9.200133373540973
+    if 'lat' in request.args:
+        lat = request.args['lat']
+    if 'lon' in request.args:
+        lon = request.args['lon']
 
-    return flask.render_template('map.html')        
+    return flask.render_template('map.html',lat = lat, lon = lon) 
+
+@app.route('/map2')
+def map2():
+
+
+    return flask.render_template('map2.html')    
+
+
 
 @app.route('/sonden/id', methods=['GET'])
 def sonden_id():
