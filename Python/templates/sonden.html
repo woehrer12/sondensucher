@@ -5,9 +5,12 @@
     <title>Sondensucher Sondenübersicht</title>
 </head>
 <body>
+    <h1>Auflistungen Sonden</h1>
     <ul id="Liste">
-        {% for item in Liste %}
-            <li><a href="sonden/id?id={{ item }}">{{ item }}</a></li>
+        {% for item in Text %}
+            {% for id, startort in item %}
+                <li><a href="sonden/id?id={{ id }}">{{id}}{{ startort }}</a></li>
+            {% endfor %}
         {% endfor %}
         </ul>
 </body>

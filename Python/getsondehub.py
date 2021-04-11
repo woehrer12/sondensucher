@@ -9,7 +9,7 @@ import datetime
 def csv(mydb):
     try:
         mycursor = mydb.cursor()
-        response = requests.get("https://api.v2.sondehub.org/sondes/telemetry",  timeout=30)
+        response = requests.get("https://api.v2.sondehub.org/sondes/telemetry",  timeout=60)
         logging.info(response.url)
         jobs = []
         if response.status_code == 200:

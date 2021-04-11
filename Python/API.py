@@ -49,16 +49,25 @@ except:
 @app.route('/')
 def home():
     mycursor.execute("SELECT COUNT(id) FROM `sonden`")
-    anzahl = mycursor.fetchone()
-    return flask.render_template('index.html',anzahl = str(anzahl)[1:-2])
+    anzahlsonden = mycursor.fetchone()
+    mycursor.execute("SELECT COUNT(id) FROM `hoehen`")
+    anzahlhoehen = mycursor.fetchone()
+    return flask.render_template('index.html',anzahlsonden = str(anzahlsonden)[1:-2], anzahlhoehen = str(anzahlhoehen)[1:-2])
 
 
 @app.route('/sonden')
 def sonden():
-    Liste = functions.sondenids(mydb)
-    print(Liste)
+    Liste = functions.sondenids(mydb,30)
+    Text = []
+    for i in Liste:
+        sonde.setid(i)
+        Text.append([(i ,"  Startort: " + sonde.getstartort())])
+    return flask.render_template('sonden.html',Liste = Liste, Text = Text)
 
-    return flask.render_template('sonden.html',Liste = Liste)    
+@app.route('/map')
+def map():
+
+    return flask.render_template('map.html')        
 
 @app.route('/sonden/id', methods=['GET'])
 def sonden_id():
@@ -70,27 +79,11 @@ def sonden_id():
     else:
         return "Error: No id field provided. Please specify an id."
     logging.info("Sonde abgerufen" + id)
-    # Create an empty list for our results
-    results = []
 
     # Loop through the data and match results that fit the requested ID.
     # IDs are unique, but other fields might return many results
     sonde.setid(id)
     if sonde.isconfirm():
-        results = [{'id': sonde.getid(),
-                    'lat': sonde.getlat(),
-                    'lon': sonde.getlon(),
-                    'hoehe': sonde.gethoehe(),
-                    'server': sonde.getserver(),
-                    'vgeschw': sonde.getvgeschw(),
-                    'freq': sonde.getfreq(),
-                    'richtung': sonde.getrichtung(),
-                    'geschw': sonde.getgeschw(),
-                    'time': sonde.getsondentime(),
-                    'vgeschposD': sonde.getvgeschposD(),
-                    'vgeschnegD': sonde.getvgeschnegD(),
-                    'maxhoehe': sonde.getmaxhoehe()
-                    }]
         return flask.render_template('sondenid.html',   id = sonde.getid(), 
                                                         lat = sonde.getlat(), 
                                                         lon = sonde.getlon(), 
@@ -103,7 +96,8 @@ def sonden_id():
                                                         time = sonde.getsondentime(),
                                                         vgeschposD = sonde.getvgeschposD(),
                                                         vgeschnegD = sonde.getvgeschnegD(),
-                                                        maxhoehe = sonde.getmaxhoehe()
+                                                        maxhoehe = sonde.getmaxhoehe(),
+                                                        startort = sonde.getstartort()
                                                         )
     else:
         return "Keine Sonde mit der ID gefunden"
@@ -117,7 +111,7 @@ def sonden_id():
 @app.route('/api/v1/resources/sonden/all', methods=['GET'])
 def api_all():
     results = []
-    sondenids = functions.sondenids(mydb)
+    sondenids = functions.sondenids(mydb,30)  #TODO Minuten in Abfrage einbauen
     logging.info("Alle Sonde abgerufen")
     for id in sondenids:
         sonde.setid(id)
@@ -133,7 +127,8 @@ def api_all():
                       'time': sonde.getsondentime(),
                       'vgeschposD': sonde.getvgeschposD(),
                       'vgeschnegD': sonde.getvgeschnegD(),
-                      'maxhoehe': sonde.getmaxhoehe()
+                      'maxhoehe': sonde.getmaxhoehe(),
+                      'startort' : sond.getstartort(),
                       }]
         results = results + sondejson
     return jsonify(results)
@@ -168,7 +163,8 @@ def api_id():
                     'time': sonde.getsondentime(),
                     'vgeschposD': sonde.getvgeschposD(),
                     'vgeschnegD': sonde.getvgeschnegD(),
-                    'maxhoehe': sonde.getmaxhoehe()
+                    'maxhoehe': sonde.getmaxhoehe(),
+                    'startort' : sonde.getstartort(),
                     }]
         return jsonify(results)
     else:

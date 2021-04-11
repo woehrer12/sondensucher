@@ -5,6 +5,8 @@
     <title>Sondensucher Webinterface</title>
 </head>
 <body>
+    <div id="mapdiv"></div>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
    <h1>{{id}}</h1>
    <table>
         <tr>
@@ -59,15 +61,45 @@
             <th>Maximale Höhe </th>
             <th>{{maxhoehe}}</th>
         </tr>
+        <tr>
+            <th>Startort </th>
+            <th>{{startort}}</th>
+        </tr>
 
    </table>
 
 
-<a href="https://radiosondy.info/sonde.php?sondenumber={{id}}">Radiosondy</a>
+    <a href="https://radiosondy.info/sonde.php?sondenumber={{id}}"target="_blank">Radiosondy</a>
 
-<a href="https://tracker.sondehub.org/?sondehub=1#!mt=osm&mz=8&qm=6_hours&f=RS_{{id}}&q=RS_*;*chase">Sondehub</a>
+    <a href="https://tracker.sondehub.org/?sondehub=1#!mt=osm&mz=8&qm=6_hours&f=RS_{{id}}&q=RS_*;*chase"target="_blank">Sondehub</a>
 
-<a href="https://www.google.com/maps/@{{lat}},{{lon}},14z">Google Maps</a>
+    <a href="https://www.google.com/maps/@{{lat}},{{lon}},14z"target="_blank">Google Maps</a>
+
+    <a href="https://aprs.fi/?call={{id}}&timerange=86400&tail=21600"target="_blank">APRS.fi</a>
+
+
+    <script>
+        map = new OpenLayers.Map("mapdiv");
+        map.addLayer(new OpenLayers.Layer.OSM());
+
+        var lonLat = new OpenLayers.LonLat( -0.1279688 ,51.5077286 )
+            .transform(
+                new OpenLayers.Projection("EPSG:4326"), // Transformation aus dem Koordinatensystem WGS 1984
+                map.getProjectionObject() // in das Koordinatensystem 'Spherical Mercator Projection'
+            );
+            
+        var zoom=16;
+
+        var markers = new OpenLayers.Layer.Markers( "Markers" );
+        map.addLayer(markers);
+        
+        markers.addMarker(new OpenLayers.Marker(lonLat));
+        
+        map.setCenter (lonLat, zoom);
+    </script>
 
 </body>
 </html>
+
+#TODO testen
+#https://wiki.openstreetmap.org/wiki/DE:OpenLayers_Marker_Example

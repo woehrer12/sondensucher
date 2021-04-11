@@ -2,13 +2,17 @@ import mysql.connector
 import configparser
 import logging
 import sys
+import time
 
 
-def sondenids(mydb):
+def sondenids(mydb,minuten):
     try:
+        sekunden = minuten * 60
         mycursor = mydb.cursor() 
-        #TODO nicht mehr auf date Abfragen sondern auf Sondetime
-        mycursor.execute("SELECT sondenid FROM sonden WHERE date>(NOW() - INTERVAL 30 MINUTE) AND lat!='0' AND sondenid<>'' GROUP BY sondenid")
+        now = int(time.time())
+        payload = "SELECT sondenid FROM sonden WHERE sondetime>(" + str(now) + " - " + str(sekunden) + ") AND lat!='0' AND sondenid<>'' GROUP BY sondenid"
+        logging.info(payload)
+        mycursor.execute(payload)
         sondenids = mycursor.fetchall()
         i = 0
         anzahl = len(sondenids)
@@ -24,5 +28,3 @@ def sondenids(mydb):
     except:
         print("Unexpected error sondenids() functions.py:" + str(sys.exc_info()))
         logging.error("Unexpected error sondenids() functions.py:" + str(sys.exc_info()))    
-
-    

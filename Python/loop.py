@@ -56,6 +56,8 @@ try:
     Database.sonden(mydb)
     Database.hoehen(mydb)
     Database.statistiken(mydb)
+    Database.startorte(mydb)
+    Database.startort_stats(mydb)
     print("Datenbanken erstellt")
 except:
     print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
@@ -77,4 +79,4 @@ while True:
     time.sleep(30)
 
     #TODO Prediction
-    #TODO Startorte
+    #TODO Startort Statistiken
