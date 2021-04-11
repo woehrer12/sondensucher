@@ -12,6 +12,7 @@ import Database
 import config
 import verarbeiten
 import getsondehub
+import startort_stats
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -75,6 +76,7 @@ while True:
     if conf['getsondehub'] == "1":
         getsondehub.csv(mydb)
     verarbeiten.sonden(mydb)
+    startort_stats.stats(mydb)
     Database.löschen(mydb)
     time.sleep(30)
 

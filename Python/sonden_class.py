@@ -278,8 +278,8 @@ class Sonden():
                 mycursor.execute("UPDATE sonden_stats SET max_hoehe = '" + str(Sonden.getmaxhoehe(self)) + "', vgeschposD = '" + str(Sonden.getvgeschposD(self)) + "', vgeschnegD = '" + str(Sonden.getvgeschnegD(self)) + "' WHERE sondenid = '" + Sonden.sondenid + "'")
                 mydb.commit()
             else:
-                payload = "INSERT INTO sonden_stats (sondenid, startort, max_hoehe, vgeschposD, vgeschnegD) VALUES ('" + Sonden.sondenid + "', '" + Sonden.startort(self) + "', " + str(Sonden.getmaxhoehe(self)) + "," + str(Sonden.getvgeschposD(self)) + "," + str(Sonden.getvgeschnegD(self)) +")"
-                mycursor.execute(payload)        
+                payload = "INSERT INTO sonden_stats (sondenid, startort, max_hoehe, vgeschposD, vgeschnegD, sondetime) VALUES ('" + Sonden.sondenid + "', '" + Sonden.startort(self) + "', " + str(Sonden.getmaxhoehe(self)) + "," + str(Sonden.getvgeschposD(self)) + "," + str(Sonden.getvgeschnegD(self)) + "," + str(Sonden.sondentime) + ")"
+                mycursor.execute(payload)
                 mydb.commit()
         else:
             logging.error("Set_Stat konnte nicht durchgeführt werden ")

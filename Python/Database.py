@@ -237,19 +237,19 @@ def startort_stats(mydb):
 
 
 def löschen(mydb):
-    # try:
-    mycursor = mydb.cursor()
-    payload = "SELECT d1.id FROM sonden d1, sonden d2 WHERE d1.id != d2.id AND d1.sondenid = d2.sondenid AND d1.sondetime = d2.sondetime LIMIT 2000 "
-    mycursor.execute(payload)
-    sonden = mycursor.fetchall()
-    # print(str(sonden[1])[1:-2])
-
-    string = ""
-    for i in sonden:
-        payload = "DELETE FROM sonden WHERE id = " + str(i)[1:-2]
+    try:
+        mycursor = mydb.cursor()
+        payload = "SELECT d1.id FROM sonden d1, sonden d2 WHERE d1.id != d2.id AND d1.sondenid = d2.sondenid AND d1.sondetime = d2.sondetime LIMIT 2000 "
         mycursor.execute(payload)
-    mydb.commit()
-    logging.info("Datensätze gelöscht Anzahl: " + str(len(sonden)))
-    # except:
-    #     print("Unexpected error Datenbank doppelte Löchen Database.py:" + str(sys.exc_info()))
-    #     logging.error("Unexpected error Datenbank doppelte Löschen Database.py:" + str(sys.exc_info()))
+        sonden = mycursor.fetchall()
+        # print(str(sonden[1])[1:-2])
+
+        string = ""
+        for i in sonden:
+            payload = "DELETE FROM sonden WHERE id = " + str(i)[1:-2]
+            mycursor.execute(payload)
+        mydb.commit()
+        logging.info("Datensätze gelöscht Anzahl: " + str(len(sonden)))
+    except:
+        print("Unexpected error Datenbank doppelte Löchen Database.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error Datenbank doppelte Löschen Database.py:" + str(sys.exc_info()))
