@@ -20,6 +20,7 @@ def create(config):
         'mqtt-sondensucher.de': '1',
         'API': '1',
         'config_version': config_version,
+        'wind' : '1'
     }
 
     with open('config/config.ini', 'w') as configfile:

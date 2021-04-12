@@ -17,20 +17,22 @@ def predict(mydb):
         mycursor = mydb.cursor() 
         sondenids = functions.sondenids(mydb,30)
         anzahlids = len(sondenids)
-
+        logging.info("Start Prediction")
         #Datenbank leeren
-        mycursor.execute("TRUNCATE `prediction`")
-        mydb.commit()
+        # mycursor.execute("TRUNCATE `prediction`")
+        # mydb.commit()
         i = 0
         while i <anzahlids:
             sonde.setid(sondenids[i])
             d = datetime.datetime.utcnow()
             t = d.isoformat("T") + "Z"
             startort = sonde.getstartort()
+            query = "DELETE FROM `prediction` WHERE sondenid = '" + sonde.sondenid + "'"
+            mycursor.execute(query)
             query = "SELECT vgeschposD, vgeschnegD, maxhoeheD FROM `startort_stats` WHERE startort = '" + startort + "'"
             mycursor.execute(query)
             daten = mycursor.fetchall()
-
+            
             if daten != []:
                 daten = daten[0]
                 vgeschposD = daten[0]

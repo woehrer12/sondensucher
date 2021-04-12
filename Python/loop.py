@@ -14,6 +14,7 @@ import verarbeiten
 import getsondehub
 import startort_stats
 import prediction
+import wind
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -80,6 +81,8 @@ while True:
     verarbeiten.sonden(mydb)
     startort_stats.stats(mydb)
     prediction.predict(mydb)
+    if conf['wind'] == "1":
+        wind.wind_xml(mydb)
     Database.löschen(mydb)
     time.sleep(30)
 
