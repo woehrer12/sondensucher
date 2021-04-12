@@ -13,6 +13,7 @@ import config
 import verarbeiten
 import getsondehub
 import startort_stats
+import prediction
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -59,6 +60,7 @@ try:
     Database.statistiken(mydb)
     Database.startorte(mydb)
     Database.startort_stats(mydb)
+    Database.prediction(mydb)
     print("Datenbanken erstellt")
 except:
     print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
@@ -77,7 +79,9 @@ while True:
         getsondehub.csv(mydb)
     verarbeiten.sonden(mydb)
     startort_stats.stats(mydb)
+    prediction.predict(mydb)
     Database.löschen(mydb)
     time.sleep(30)
 
     #TODO Prediction
+    #TODO Wind https://plotly.com/python/quiver-plots/

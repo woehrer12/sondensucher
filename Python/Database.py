@@ -227,9 +227,9 @@ def startort_stats(mydb):
                 `id` int(11) NOT NULL AUTO_INCREMENT, \
                 `startort` text NOT NULL, \
                 `anzahl_sonden_72h` int(11) NOT NULL, \
-                `vgeschposD` text NOT NULL, \
-                `vgeschnegD` text NOT NULL, \
-                `maxhoeheD` text NOT NULL, \
+                `vgeschposD` double NOT NULL, \
+                `vgeschnegD` double NOT NULL, \
+                `maxhoeheD` double NOT NULL, \
                 PRIMARY KEY (id) \
                 )")
             logging.info("Datenbank Startorte Statistiken wurde erstellt")
@@ -239,7 +239,29 @@ def startort_stats(mydb):
         logging.error(
             "Unexpected error Datenbank Startorte Statistiken anlegen Database.py:" + str(sys.exc_info()))
 
-
+def prediction(mydb):
+    try:
+        mycursor = mydb.cursor()
+        # Datenbank sonden anlegen
+        if checkTableExists(mydb, "prediction"):
+            logging.info("Datenbank Prediction Existiert")
+        else:
+            logging.info("Datenbank Prediction Existiert nicht")
+            mycursor.execute("CREATE TABLE prediction(\
+                `id` int(11) NOT NULL AUTO_INCREMENT, \
+                `sondenid` text NOT NULL, \
+                `lat` double NOT NULL, \
+                `lon` double NOT NULL, \
+                `hoehe` double NOT NULL, \
+                `quelle` text NOT NULL, \
+                PRIMARY KEY (id) \
+                )")
+            logging.info("Datenbank Startorte Statistiken wurde erstellt")
+    except:
+        print("Unexpected error Datenbank Startorte Statistiken anlegen Database.py:" +
+              str(sys.exc_info()))
+        logging.error(
+            "Unexpected error Datenbank Startorte Statistiken anlegen Database.py:" + str(sys.exc_info()))
 
 def löschen(mydb):
     try:

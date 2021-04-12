@@ -51,7 +51,6 @@ def stats(mydb):
                 else:
                     payload = "INSERT INTO startort_stats (startort, anzahl_sonden_72h, vgeschposD, vgeschnegD, maxhoeheD) VALUES ('" + startort + "', " + str(
                         anzahl_sonden_72h[0]) + ", " + str(vgeschposD[0]) + "," + str(vgeschnegD[0]) + "," + str(maxhoeheD[0]) + ")"
-                    print(payload)
                     mycursor.execute(payload)
                     mydb.commit()
 

@@ -88,7 +88,7 @@ class Sonden():
 
             else:
                 print("Not confirm")
-                logging.error("ID not confirm" + id)
+                logging.error("ID not confirm " + id + " Query: " + query)
     
     def refresh(self):
         mycursor = mydb.cursor()
@@ -284,15 +284,13 @@ class Sonden():
         else:
             logging.error("Set_Stat konnte nicht durchgeführt werden ")
 
-    def getgroudhohe(self):
+    def getgroudhohe(self):   #TODO checken wegen tuple
         mycursor = mydb.cursor() 
         mycursor.execute("SELECT Hoehe FROM hoehen WHERE Lat = " + str(Sonden.lat) + " AND  Lon = " + str(Sonden.lon))
-        hoehe = mycursor.fetchone()
-        #Um den Fetch zu leeren
-        buffer = mycursor.fetchall()
-        #print(hoehe)
-        if hoehe == None:
-            mycursor.execute("INSERT INTO hoehen (lat, lon, hoehe, quelle) VALUES (%s,%s,%s,%s)",(str(Sonden.lat),str(Sonden.lon),"0","sonden_class.py",))
-            mydb.commit()
-            return 0
-        return hoehe
+        hoehe = mycursor.fetchall()
+        if hoehe != []:
+            hoehe = hoehe[0]
+            return float(hoehe[0])
+        mycursor.execute("INSERT INTO hoehen (lat, lon, hoehe, quelle) VALUES (%s,%s,%s,%s)",(str(Sonden.lat),str(Sonden.lon),"0","sonden_class.py",))
+        mydb.commit()
+        return 0

@@ -111,6 +111,7 @@ def sonden_id():
                                                             lat = sonde.getlat(), 
                                                             lon = sonde.getlon(), 
                                                             hoehe = sonde.gethoehe(),
+                                                            hoeheoverground = sonde.gethoehe() - sonde.getgroudhohe(),
                                                             server = sonde.getserver(),
                                                             vgeschw = sonde.getvgeschw(),
                                                             freq = sonde.getfreq(),
@@ -137,14 +138,11 @@ def sonden_id():
 def startorte():
     mycursor.execute("SELECT startort FROM `startort_stats` WHERE anzahl_sonden_72h > 0 ")
     Liste = mycursor.fetchall()
-    print(type(Liste))
-    print(len(Liste))
     Text = []
     i = 0
     while i < len(Liste):
         Text.append(str(Liste[i])[2:-3])
         i = i + 1
-    print(Text)
     return flask.render_template('startorte.html',Liste = Text)
 
 
