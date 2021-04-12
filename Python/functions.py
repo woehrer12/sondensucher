@@ -11,7 +11,6 @@ def sondenids(mydb,minuten):
         mycursor = mydb.cursor() 
         now = int(time.time())
         payload = "SELECT sondenid FROM sonden WHERE sondetime>(" + str(now) + " - " + str(sekunden) + ") AND lat!='0' AND sondenid<>'' GROUP BY sondenid"
-        logging.info(payload)
         mycursor.execute(payload)
         sondenids = mycursor.fetchall()
         i = 0

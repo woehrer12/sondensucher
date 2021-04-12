@@ -284,7 +284,7 @@ class Sonden():
         else:
             logging.error("Set_Stat konnte nicht durchgeführt werden ")
 
-    def getgroudhohe(self):   #TODO checken wegen tuple
+    def getgroudhohe(self):
         mycursor = mydb.cursor() 
         mycursor.execute("SELECT Hoehe FROM hoehen WHERE Lat = " + str(Sonden.lat) + " AND  Lon = " + str(Sonden.lon))
         hoehe = mycursor.fetchall()
@@ -294,3 +294,15 @@ class Sonden():
         mycursor.execute("INSERT INTO hoehen (lat, lon, hoehe, quelle) VALUES (%s,%s,%s,%s)",(str(Sonden.lat),str(Sonden.lon),"0","sonden_class.py",))
         mydb.commit()
         return 0
+
+    def prediction_landing(self):
+        mycursor = mydb.cursor() 
+        mycursor.execute("SELECT lat, lon, time FROM prediction WHERE sondenid = '" + Sonden.sondenid + "'  ORDER BY `prediction`.`time` DESC LIMIT 1")
+        prediction = mycursor.fetchall()
+        if prediction != []:
+            prediction = prediction[0]
+            lat = prediction[0]
+            lon = prediction[1]
+            ptime = time.strftime('%d-%m-%Y %H:%M:%S', time.localtime(int(prediction[2])))
+            return (lat, lon, ptime)
+        return (0,0,0)

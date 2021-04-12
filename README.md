@@ -26,4 +26,6 @@ http://127.0.0.1:5000/api/v1/resources/sonden/all
 
 http://127.0.0.1:5000
 
-#TODO
+## Prediction
+
+Ist einzusehen unter der direkten Seite zur Sonde. Prediction funktioniert nur wenn der Startort bekannt und angelegt ist.

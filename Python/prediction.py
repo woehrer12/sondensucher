@@ -21,7 +21,6 @@ def predict(mydb):
         #Datenbank leeren
         mycursor.execute("TRUNCATE `prediction`")
         mydb.commit()
-
         i = 0
         while i <anzahlids:
             sonde.setid(sondenids[i])
@@ -43,11 +42,10 @@ def predict(mydb):
                     payload = "launch_latitude=" + str(sonde.getlat())+ "&launch_longitude=" + str(sonde.getlon()) + "&launch_altitude=" + str(sonde.gethoehe()) + "&launch_datetime=" + t + "&ascent_rate=" + str(vgeschposD) + "&burst_altitude=" + str(float(sonde.gethoehe())+1) + "&descent_rate=" + str(vgeschnegD)
                 else:
                     payload = "launch_latitude=" + str(sonde.getlat()) + "&launch_longitude=" + str(sonde.getlon()) + "&launch_altitude=" + str(sonde.gethoehe()) + "&launch_datetime=" + t + "&ascent_rate=" + str(vgeschposD) + "&burst_altitude=" + str(burst_altitude) + "&descent_rate=" + str(vgeschnegD)
-                logging.info(payload)
 
                 response = requests.get("http://predict.cusf.co.uk/api/v1/?" + payload,  timeout=30)
                 #print(response.text)
-
+                logging.info(response)
                 if response.status_code == 200:
 
                     j = 0
@@ -64,9 +62,12 @@ def predict(mydb):
                         altitude = response.json()['prediction'][0]['trajectory'][j]['altitude']
                         #print("Höhe", altitude)
 
+                        time = response.json()['prediction'][0]['trajectory'][j]['datetime']
+                        time = int(datetime.datetime.strptime(time,'%Y-%m-%dT%H:%M:%S.%f%z').timestamp())
+
                         quelle = "predict.cusf.co.uk"
 
-                        mycursor.execute("INSERT INTO prediction (sondenid, lat, lon, hoehe, quelle) VALUES (%s, %s,%s,%s,%s)",(sondenids[i],lat,lng,altitude,quelle,))        
+                        mycursor.execute("INSERT INTO prediction (sondenid, lat, lon, hoehe, time, quelle) VALUES (%s,%s,%s,%s,%s,%s)",(sondenids[i],lat,lng,altitude,time,quelle,))        
                         mydb.commit()
 
                         j = j + 1
@@ -86,16 +87,18 @@ def predict(mydb):
                         altitude = response.json()['prediction'][1]['trajectory'][j]['altitude']
                         #print("Höhe", altitude)
 
+                        time = response.json()['prediction'][1]['trajectory'][j]['datetime']
+                        time = int(datetime.datetime.strptime(time,'%Y-%m-%dT%H:%M:%S.%f%z').timestamp())
                         quelle = "predict.cusf.co.uk"
 
-                        mycursor.execute("INSERT INTO prediction (sondenid, lat, lon, hoehe, quelle) VALUES (%s, %s,%s,%s,%s)",(sondenids[i],lat,lng,altitude,quelle,))        
+                        mycursor.execute("INSERT INTO prediction (sondenid, lat, lon, hoehe, time, quelle) VALUES (%s,%s,%s,%s,%s,%s)",(sondenids[i],lat,lng,altitude,time,quelle,))        
                         mydb.commit()
 
                         j = j + 1
                         #print(j)
 
                 else:
-                    logging.info("Prediction Request not 200 " + response.url + response.text)
+                    logging.error("Prediction Request not 200 " + response.url + response.text)
 
 
             i = i + 1

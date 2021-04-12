@@ -83,5 +83,4 @@ while True:
     Database.löschen(mydb)
     time.sleep(30)
 
-    #TODO Prediction
     #TODO Wind https://plotly.com/python/quiver-plots/

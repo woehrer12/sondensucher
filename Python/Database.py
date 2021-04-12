@@ -204,7 +204,9 @@ def startorte(mydb):
                     ( 'Niš (RS)', 43.32, 21.89 ), \
                     ( 'Jokioinen (FI)', 60.83, 23.49 ), \
                     ( 'Sofia (BG)', 42.65, 23.38 ), \
-                    ( 'Belgrade (RS)', 44.77, 20.42 ) \
+                    ( 'Belgrade (RS)', 44.77, 20.42 ), \
+                    ( 'Altengrabow (DE)' , 52.15, 12.23), \
+                    ( 'Sydney (AU)' , -33.94, 151.17) \
                         ;"
             mycursor.execute(query)        
             mydb.commit()
@@ -253,6 +255,7 @@ def prediction(mydb):
                 `lat` double NOT NULL, \
                 `lon` double NOT NULL, \
                 `hoehe` double NOT NULL, \
+                `time` int(11) NOT NULL, \
                 `quelle` text NOT NULL, \
                 PRIMARY KEY (id) \
                 )")

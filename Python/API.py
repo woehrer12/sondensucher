@@ -43,7 +43,8 @@ try:
     mycursor = mydb.cursor()
 except:
     print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+    logger.error("Unexpected error Datenbankverbindung API.py:" +
+                 str(sys.exc_info()))
 
 
 @app.route('/')
@@ -58,12 +59,14 @@ def home():
     anzahlstartorte = mycursor.fetchone()
     mycursor.execute("SELECT COUNT(id) FROM `startort_stats`")
     anzahlstartort_stats = mycursor.fetchone()
-    return flask.render_template('index.html',  anzahlsonden = str(anzahlsonden)[1:-2], 
-                                                anzahlhoehen = str(anzahlhoehen)[1:-2],
-                                                anzahlsonden_stats = str(anzahlsonden_stats)[1:-2],
-                                                anzahlstartorte = str(anzahlstartorte)[1:-2],
-                                                anzahlstartort_stats = str(anzahlstartort_stats)[1:-2],
-                                                )
+    return flask.render_template('index.html',  anzahlsonden=str(anzahlsonden)[1:-2],
+                                 anzahlhoehen=str(anzahlhoehen)[1:-2],
+                                 anzahlsonden_stats=str(
+                                     anzahlsonden_stats)[1:-2],
+                                 anzahlstartorte=str(anzahlstartorte)[1:-2],
+                                 anzahlstartort_stats=str(
+                                     anzahlstartort_stats)[1:-2],
+                                 )
 
 
 @app.route('/sonden')
@@ -72,30 +75,30 @@ def sonden():
     if 'min' in request.args:
         minute = int(request.args['min'])
     Liste = []
-    Liste = functions.sondenids(mydb,minute)
+    Liste = functions.sondenids(mydb, minute)
     Text = []
     for i in Liste:
         sonde.setid(i)
-        Text.append([(i ,"  Startort: " + sonde.getstartort())])
-    return flask.render_template('sonden.html',Liste = Liste, Text = Text)
+        Text.append([(i, "  Startort: " + sonde.getstartort())])
+    return flask.render_template('sonden.html', Liste=Liste, Text=Text)
+
 
 @app.route('/map')
 def map():
     lat = 48.82823584499739
     lon = 9.200133373540973
+    latpredict = 48.82823584499739
+    lonpredict = 9.200133373540973
     if 'lat' in request.args:
         lat = request.args['lat']
     if 'lon' in request.args:
         lon = request.args['lon']
+    if 'latpredict' in request.args:
+        latpredict = request.args['latpredict']
+    if 'lonpredict' in request.args:
+        lonpredict = request.args['lonpredict']
 
-    return flask.render_template('map.html',lat = lat, lon = lon) 
-
-@app.route('/map2')
-def map2():
-
-
-    return flask.render_template('map2.html')    
-
+    return flask.render_template('leaflet.html', latsonde=lat, lonsonde=lon, latpredict=latpredict, lonpredict=lonpredict)
 
 
 @app.route('/sonden/id', methods=['GET'])
@@ -107,43 +110,43 @@ def sonden_id():
         id = request.args['id']
         sonde.setid(id)
         if sonde.isconfirm():
-            return flask.render_template('sondenid.html',   id = sonde.getid(), 
-                                                            lat = sonde.getlat(), 
-                                                            lon = sonde.getlon(), 
-                                                            hoehe = sonde.gethoehe(),
-                                                            hoeheoverground = sonde.gethoehe() - sonde.getgroudhohe(),
-                                                            server = sonde.getserver(),
-                                                            vgeschw = sonde.getvgeschw(),
-                                                            freq = sonde.getfreq(),
-                                                            richtung = sonde.getrichtung(),
-                                                            geschw = sonde.getgeschw(),
-                                                            time = sonde.getsondentime(),
-                                                            vgeschposD = sonde.getvgeschposD(),
-                                                            vgeschnegD = sonde.getvgeschnegD(),
-                                                            maxhoehe = sonde.getmaxhoehe(),
-                                                            startort = sonde.getstartort()
-                                                            )
- 
+            (latpredict, lonpredict, timepredict) = sonde.prediction_landing()
+            return flask.render_template('sondenid.html',   id=sonde.getid(),
+                                         lat=sonde.getlat(),
+                                         lon=sonde.getlon(),
+                                         hoehe=sonde.gethoehe(),
+                                         hoeheoverground=(
+                                             sonde.gethoehe() - sonde.getgroudhohe()).__round__(2),
+                                         server=sonde.getserver(),
+                                         vgeschw=sonde.getvgeschw(),
+                                         freq=sonde.getfreq(),
+                                         richtung=sonde.getrichtung(),
+                                         geschw=sonde.getgeschw(),
+                                         time=sonde.getsondentime(),
+                                         vgeschposD=sonde.getvgeschposD().__round__(2),
+                                         vgeschnegD=sonde.getvgeschnegD().__round__(2),
+                                         maxhoehe=sonde.getmaxhoehe(),
+                                         startort=sonde.getstartort(),
+                                         latpredict=latpredict,
+                                         lonpredict=lonpredict,
+                                         timepredict=timepredict
+                                         )
+
     return "Error: No id field provided. Please specify an id."
     logging.info("Sonde abgerufen" + id)
-
-    # Loop through the data and match results that fit the requested ID.
-    # IDs are unique, but other fields might return many results
-
-    # Use the jsonify function from Flask to convert our list of
-    # Python dictionaries to the JSON format.
 
 
 @app.route('/startorte')
 def startorte():
-    mycursor.execute("SELECT startort FROM `startort_stats` WHERE anzahl_sonden_72h > 0 ")
+    mycursor.execute(
+        "SELECT startort FROM `startort_stats` WHERE anzahl_sonden_72h > 0 ")
     Liste = mycursor.fetchall()
     Text = []
     i = 0
     while i < len(Liste):
         Text.append(str(Liste[i])[2:-3])
         i = i + 1
-    return flask.render_template('startorte.html',Liste = Text)
+    return flask.render_template('startorte.html', Liste=Text)
 
 
 @app.route('/startorte/name', methods=['GET'])
@@ -154,7 +157,8 @@ def startorte_name():
     if 'name' in request.args:
         name = request.args['name']
         logging.info("Startort abgerufen" + name)
-        mycursor.execute("SELECT * FROM `startort_stats` WHERE startort = '" + name + "' ")
+        mycursor.execute(
+            "SELECT * FROM `startort_stats` WHERE startort = '" + name + "' ")
         Liste = mycursor.fetchall()
         Liste = Liste[0]
         name = Liste[1]
@@ -163,35 +167,34 @@ def startorte_name():
         vgeschnegD = Liste[4]
         maxhoeheD = Liste[5]
 
-        mycursor.execute("SELECT Lat, Lon FROM `startorte` WHERE name = '" + name + "' ")
+        mycursor.execute(
+            "SELECT Lat, Lon FROM `startorte` WHERE name = '" + name + "' ")
         startortlatlon = mycursor.fetchall()
         startortlatlon = startortlatlon[0]
         lat = startortlatlon[0]
         lon = startortlatlon[1]
 
-
     else:
         return "Error: No id field provided. Please specify an id."
 
+    return flask.render_template('startortename.html', name=name,
+                                 anzahl_sonden_72h=anzahl_sonden_72h,
+                                 vgeschposD=vgeschposD,
+                                 vgeschnegD=vgeschnegD,
+                                 maxhoeheD=maxhoeheD,
+                                 lat=lat,
+                                 lon=lon)
 
-    return flask.render_template('startortename.html', name = name,
-                                                        anzahl_sonden_72h = anzahl_sonden_72h,
-                                                        vgeschposD = vgeschposD,
-                                                        vgeschnegD = vgeschnegD,
-                                                        maxhoeheD = maxhoeheD,
-                                                        lat = lat,
-                                                        lon = lon)
-                                                        
 
-#API
+# API
 
 @app.route('/api/v1/resources/sonden/all', methods=['GET'])
 def api_all():
     minute = 30
     if 'min' in request.args:
-        minute = int(request.args['min'])    
+        minute = int(request.args['min'])
     results = []
-    sondenids = functions.sondenids(mydb,minute)
+    sondenids = functions.sondenids(mydb, minute)
     logging.info("Alle Sonde abgerufen")
     for id in sondenids:
         sonde.setid(id)
@@ -208,7 +211,7 @@ def api_all():
                       'vgeschposD': sonde.getvgeschposD(),
                       'vgeschnegD': sonde.getvgeschnegD(),
                       'maxhoehe': sonde.getmaxhoehe(),
-                      'startort' : sond.getstartort(),
+                      'startort': sond.getstartort(),
                       }]
         results = results + sondejson
     return jsonify(results)
@@ -244,7 +247,7 @@ def api_id():
                     'vgeschposD': sonde.getvgeschposD(),
                     'vgeschnegD': sonde.getvgeschnegD(),
                     'maxhoehe': sonde.getmaxhoehe(),
-                    'startort' : sonde.getstartort(),
+                    'startort': sonde.getstartort(),
                     }]
         return jsonify(results)
     else:

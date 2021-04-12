@@ -68,6 +68,18 @@
             <th>Startort </th>
             <th>{{startort}}</th>
         </tr>
+        <tr>
+            <th>Prediction Lat</th>
+            <th>{{latpredict}}</th>
+        </tr>
+        <tr>
+            <th>Prediction Lon</th>
+            <th>{{lonpredict}}</th>
+        </tr>
+        <tr>
+            <th>Prediction Time</th>
+            <th>{{timepredict}}</th>
+        </tr>
 
    </table>
 
@@ -81,7 +93,7 @@
     <a href="https://aprs.fi/?call={{id}}&timerange=86400&tail=21600"target="_blank">APRS.fi</a>
    <br>
     <iframe
-        src="/map?lat={{lat}}&?lon={{lon}}"
+        src="/map?lat={{lat}}&lon={{lon}}&latpredict={{latpredict}}&lonpredict={{lonpredict}}"
         width="600" 
         height="400" 
         name="SELFHTML_in_a_box">
