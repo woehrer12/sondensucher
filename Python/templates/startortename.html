@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Startort Details</title>
+    <a href="/startorte">Zurück</a><br>
+</head>
+<body>
+   <h1>{{name}}</h1>
+   <table>
+        <tr>
+           <th>Anzahl Sonden 72h </th>
+           <th>{{anzahl_sonden_72h}}</th>
+        </tr>
+        <tr>
+            <th>Durchschnittliche Steigrate </th>
+            <th>{{vgeschposD}}</th>
+        </tr>
+        <tr>
+            <th>Durchschnittliche Sinkrate</th>
+            <th>{{vgeschnegD}}</th>
+        </tr>
+        <tr>
+            <th>Durchschnittliche Maximale Höhe </th>
+            <th>{{maxhoeheD}}</th>
+        </tr>
+        <tr>
+            <th>Lat</th>
+            <th>{{lat}}</th>
+        </tr>
+        <tr>
+            <th>Lon</th>
+            <th>{{lon}}</th>
+        </tr>
+
+   </table>
+
+    <a href="https://www.google.com/maps/@{{lat}},{{lon}},14z"target="_blank">Google Maps</a>
+
+  <br>
+    <iframe
+        src="/map?lat={{lat}}&?lon={{lon}}"
+        width="600" 
+        height="400" 
+        name="SELFHTML_in_a_box">
+    
+        <p>Ihr Browser kann leider keine eingebetteten Frames anzeigen:
+        Sie können die eingebettete Seite über den folgenden Verweis aufrufen: 
+        <a href="https://wiki.selfhtml.org/wiki/Startseite">SELFHTML</a>
+        </p>
+    </iframe>
+
+</body>
+</html>

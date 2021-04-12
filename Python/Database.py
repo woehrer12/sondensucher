@@ -199,7 +199,12 @@ def startorte(mydb):
                     ( 'Porto Alegre (BR)', -29.99, -51.17 ), \
                     ( 'Trapani-Birgi (IT)', 37.91, 12.48 ), \
                     ( 'Ankara (TR)', 39.97, 32.86 ), \
-                    ( 'Vienna (AT)', 48.25, 16.35 ) \
+                    ( 'Vienna (AT)', 48.25, 16.35 ), \
+                    ( 'Larkhill (GB)', 51.19, -1.75 ), \
+                    ( 'Niš (RS)', 43.32, 21.89 ), \
+                    ( 'Jokioinen (FI)', 60.83, 23.49 ), \
+                    ( 'Sofia (BG)', 42.65, 23.38 ), \
+                    ( 'Belgrade (RS)', 44.77, 20.42 ) \
                         ;"
             mycursor.execute(query)        
             mydb.commit()

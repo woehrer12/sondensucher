@@ -68,18 +68,15 @@ def home():
 
 @app.route('/sonden')
 def sonden():
-    #TODO Minute testen
     minute = 30
     if 'min' in request.args:
-        minute = request.args['min']
-    print(minute)
+        minute = int(request.args['min'])
     Liste = []
     Liste = functions.sondenids(mydb,minute)
     Text = []
     for i in Liste:
         sonde.setid(i)
         Text.append([(i ,"  Startort: " + sonde.getstartort())])
-    print(Liste)
     return flask.render_template('sonden.html',Liste = Liste, Text = Text)
 
 @app.route('/map')
@@ -108,42 +105,95 @@ def sonden_id():
     # If no ID is provided, display an error in the browser.
     if 'id' in request.args:
         id = request.args['id']
-    else:
-        return "Error: No id field provided. Please specify an id."
+        sonde.setid(id)
+        if sonde.isconfirm():
+            return flask.render_template('sondenid.html',   id = sonde.getid(), 
+                                                            lat = sonde.getlat(), 
+                                                            lon = sonde.getlon(), 
+                                                            hoehe = sonde.gethoehe(),
+                                                            server = sonde.getserver(),
+                                                            vgeschw = sonde.getvgeschw(),
+                                                            freq = sonde.getfreq(),
+                                                            richtung = sonde.getrichtung(),
+                                                            geschw = sonde.getgeschw(),
+                                                            time = sonde.getsondentime(),
+                                                            vgeschposD = sonde.getvgeschposD(),
+                                                            vgeschnegD = sonde.getvgeschnegD(),
+                                                            maxhoehe = sonde.getmaxhoehe(),
+                                                            startort = sonde.getstartort()
+                                                            )
+ 
+    return "Error: No id field provided. Please specify an id."
     logging.info("Sonde abgerufen" + id)
 
     # Loop through the data and match results that fit the requested ID.
     # IDs are unique, but other fields might return many results
-    sonde.setid(id)
-    if sonde.isconfirm():
-        return flask.render_template('sondenid.html',   id = sonde.getid(), 
-                                                        lat = sonde.getlat(), 
-                                                        lon = sonde.getlon(), 
-                                                        hoehe = sonde.gethoehe(),
-                                                        server = sonde.getserver(),
-                                                        vgeschw = sonde.getvgeschw(),
-                                                        freq = sonde.getfreq(),
-                                                        richtung = sonde.getrichtung(),
-                                                        geschw = sonde.getgeschw(),
-                                                        time = sonde.getsondentime(),
-                                                        vgeschposD = sonde.getvgeschposD(),
-                                                        vgeschnegD = sonde.getvgeschnegD(),
-                                                        maxhoehe = sonde.getmaxhoehe(),
-                                                        startort = sonde.getstartort()
-                                                        )
-    else:
-        return "Keine Sonde mit der ID gefunden"
 
     # Use the jsonify function from Flask to convert our list of
     # Python dictionaries to the JSON format.
 
 
+@app.route('/startorte')
+def startorte():
+    mycursor.execute("SELECT startort FROM `startort_stats` WHERE anzahl_sonden_72h > 0 ")
+    Liste = mycursor.fetchall()
+    print(type(Liste))
+    print(len(Liste))
+    Text = []
+    i = 0
+    while i < len(Liste):
+        Text.append(str(Liste[i])[2:-3])
+        i = i + 1
+    print(Text)
+    return flask.render_template('startorte.html',Liste = Text)
 
+
+@app.route('/startorte/name', methods=['GET'])
+def startorte_name():
+    # Check if an ID was provided as part of the URL.
+    # If ID is provided, assign it to a variable.
+    # If no ID is provided, display an error in the browser.
+    if 'name' in request.args:
+        name = request.args['name']
+        logging.info("Startort abgerufen" + name)
+        mycursor.execute("SELECT * FROM `startort_stats` WHERE startort = '" + name + "' ")
+        Liste = mycursor.fetchall()
+        Liste = Liste[0]
+        name = Liste[1]
+        anzahl_sonden_72h = Liste[2]
+        vgeschposD = Liste[3]
+        vgeschnegD = Liste[4]
+        maxhoeheD = Liste[5]
+
+        mycursor.execute("SELECT Lat, Lon FROM `startorte` WHERE name = '" + name + "' ")
+        startortlatlon = mycursor.fetchall()
+        startortlatlon = startortlatlon[0]
+        lat = startortlatlon[0]
+        lon = startortlatlon[1]
+
+
+    else:
+        return "Error: No id field provided. Please specify an id."
+
+
+    return flask.render_template('startortename.html', name = name,
+                                                        anzahl_sonden_72h = anzahl_sonden_72h,
+                                                        vgeschposD = vgeschposD,
+                                                        vgeschnegD = vgeschnegD,
+                                                        maxhoeheD = maxhoeheD,
+                                                        lat = lat,
+                                                        lon = lon)
+                                                        
+
+#API
 
 @app.route('/api/v1/resources/sonden/all', methods=['GET'])
 def api_all():
+    minute = 30
+    if 'min' in request.args:
+        minute = int(request.args['min'])    
     results = []
-    sondenids = functions.sondenids(mydb,30)  #TODO Minuten in Abfrage einbauen
+    sondenids = functions.sondenids(mydb,minute)
     logging.info("Alle Sonde abgerufen")
     for id in sondenids:
         sonde.setid(id)

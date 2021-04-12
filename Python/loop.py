@@ -81,4 +81,3 @@ while True:
     time.sleep(30)
 
     #TODO Prediction
-    #TODO Startort Statistiken
