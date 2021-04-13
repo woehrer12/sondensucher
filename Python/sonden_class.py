@@ -292,7 +292,7 @@ class Sonden():
         if hoehe != []:
             hoehe = hoehe[0]
             logging.info("Höhe:" + str(hoehe[0]))
-            if type(hoehe) == float:
+            if type(hoehe[0]) == float:
                 return float(hoehe[0])
             else:
                 return 0
