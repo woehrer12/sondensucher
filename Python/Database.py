@@ -71,7 +71,7 @@ def hoehen(mydb):
                 `id` int(11) NOT NULL AUTO_INCREMENT, \
                 `lat` double NOT NULL, \
                 `lon` double NOT NULL, \
-                `hoehe` double NOT NULL, \
+                `hoehe` double DEFAULT NULL, \
                 `quelle` text NOT NULL, \
                 PRIMARY KEY (id) \
                 )")

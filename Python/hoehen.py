@@ -12,7 +12,7 @@ def hoehe(mydb):
         mycursor.execute("SELECT id, lat, lon FROM hoehen WHERE quelle = 'sonden_class.py' LIMIT 50")
         request = mycursor.fetchall()
         länge = len(request)
-        i=0
+        i = 0
         #Funktion verlassen wenn keine Höhen erforderlich sind
         if länge == 0:
             logging.info("Keine Höhen zum Abfragen gefunden")
@@ -21,8 +21,6 @@ def hoehe(mydb):
         while i < länge:
             request1 = request[i]
             payload = payload + str(request1[1]) + "," + str(request1[2]) + "|"
-            s = str(request1[0])
-            mycursor.execute("DELETE FROM hoehen WHERE Id = "+ str(request1[0]))
             i = i + 1
 
         response = requests.get("https://api.opentopodata.org/v1/eudem25m?locations=" + payload,  timeout=30)
@@ -33,6 +31,14 @@ def hoehe(mydb):
         if response.status_code == 200:
             #print('Success!')
             
+            i = 0
+            #Alle Daten löschen
+            while i < länge:
+                request1 = request[i]
+                s = str(request1[0])
+                mycursor.execute("DELETE FROM hoehen WHERE Id = "+ str(request1[0]))
+                i = i + 1
+
             #print(response.text)
             
             ok = response.json()['status']
@@ -58,7 +64,7 @@ def hoehe(mydb):
                     mycursor.execute(query)
                     request = mycursor.fetchall()
                     if elevation == None:
-                        elevation = 0
+                        elevation = 'NULL'
                     if request == []: 
                     
                         #In Datenbank eintragen
@@ -69,7 +75,9 @@ def hoehe(mydb):
                 j = j + 1     
             
         elif response.status_code == 404:
-            print('Not Found.')
+            logging.error('Höhen 404 Not Found.')
+        else:
+            logging.info("Höhen not 200")
     except:
         print("Unexpected error hoehen() hoehen.py:" + str(sys.exc_info()))
         logging.error("Unexpected error hoehen.py:" + str(sys.exc_info()))

@@ -13,7 +13,7 @@ sonde = Sonden()
 
 
 def predict(mydb):
-    try:
+    #try: #TODO
         mycursor = mydb.cursor() 
         sondenids = functions.sondenids(mydb,30)
         anzahlids = len(sondenids)
@@ -38,7 +38,8 @@ def predict(mydb):
                 vgeschposD = daten[0]
                 vgeschnegD = abs(daten[1])
                 burst_altitude =  daten[2]
-
+                if burst_altitude < sonde.gethoehe() and not sonde.isburst():
+                    burst_altitude = sonde.gethoehe() + 100
 
                 if sonde.isburst():
                     payload = "launch_latitude=" + str(sonde.getlat())+ "&launch_longitude=" + str(sonde.getlon()) + "&launch_altitude=" + str(sonde.gethoehe()) + "&launch_datetime=" + t + "&ascent_rate=" + str(vgeschposD) + "&burst_altitude=" + str(float(sonde.gethoehe())+1) + "&descent_rate=" + str(vgeschnegD)
@@ -47,7 +48,7 @@ def predict(mydb):
 
                 response = requests.get("http://predict.cusf.co.uk/api/v1/?" + payload,  timeout=30)
                 #print(response.text)
-                logging.info(response)
+                #logging.info(response)
                 if response.status_code == 200:
 
                     j = 0
@@ -104,7 +105,7 @@ def predict(mydb):
 
 
             i = i + 1
-    except:
-        print("Unexpected error prediction.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error presiction.py:" + str(sys.exc_info()))
-        return None
+    # except:
+    #     print("Unexpected error prediction.py:" + str(sys.exc_info()))
+    #     logging.error("Unexpected error presiction.py:" + str(sys.exc_info()))
+    #     return None

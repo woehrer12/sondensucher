@@ -20,13 +20,13 @@ def stats(mydb):
                 startort + "' "
             mycursor.execute(query)
             anzahl_sonden_72h = mycursor.fetchall()[0]
-            # Durchschnitts Aufstief bestimmen
+            # Durchschnitts Aufstief bestimmen #TODO über Zeit
             query = "SELECT Avg (vgeschposD) FROM `sonden_stats` WHERE startort = '" + \
                 startort + "' AND " + \
                     " sondetime>(" + str(now) + " - " + str(sekunden) + ")"
             mycursor.execute(query)
             vgeschposD = mycursor.fetchall()[0]
-            # Durchschnitts Fall bestimmen
+            # Durchschnitts Fall bestimmen #TODO über Zeit
             query = "SELECT Avg (vgeschnegD) FROM `sonden_stats` WHERE startort = '" + \
                 startort + "' AND " + \
                     " sondetime>(" + str(now) + " - " + str(sekunden) + ")"

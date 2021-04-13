@@ -127,8 +127,8 @@ def sonden_id():
                                          vgeschnegD=sonde.getvgeschnegD().__round__(2),
                                          maxhoehe=sonde.getmaxhoehe(),
                                          startort=sonde.getstartort(),
-                                         latpredict=latpredict,
-                                         lonpredict=lonpredict,
+                                         latpredict=latpredict.__round__(2),
+                                         lonpredict=lonpredict.__round__(2),
                                          timepredict=timepredict
                                          )
 
