@@ -13,7 +13,7 @@ sonde = Sonden()
 
 
 def predict(mydb):
-    #try: #TODO
+    try:
         mycursor = mydb.cursor() 
         sondenids = functions.sondenids(mydb,30)
         anzahlids = len(sondenids)
@@ -105,7 +105,7 @@ def predict(mydb):
 
 
             i = i + 1
-    # except:
-    #     print("Unexpected error prediction.py:" + str(sys.exc_info()))
-    #     logging.error("Unexpected error presiction.py:" + str(sys.exc_info()))
-    #     return None
+    except:
+        print("Unexpected error prediction.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error presiction.py:" + str(sys.exc_info()))
+        return None

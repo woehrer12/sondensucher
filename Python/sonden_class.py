@@ -65,7 +65,7 @@ class Sonden():
     def setid(self, id):
         mycursor = mydb.cursor()
         Sonden.clear(self)
-        #logging.info("setid id = " + id)
+        logging.info("setid id = " + id)
         text = id
         if text.isalnum() and text[0].isalpha() and len(text) > 7:
             Sonden.sondenid = id
@@ -289,12 +289,13 @@ class Sonden():
         query = "SELECT hoehe FROM hoehen WHERE Lat = " + str(Sonden.lat) + " AND  Lon = " + str(Sonden.lon)
         mycursor.execute(query)
         hoehe = mycursor.fetchall()
-        if hoehe != [(None,)] and hoehe != []:
-            print(hoehe)
+        if hoehe != []:
             hoehe = hoehe[0]
             logging.info("Höhe:" + str(hoehe[0]))
             if type(hoehe) == float:
                 return float(hoehe[0])
+            else:
+                return 0
         logging.info("Höhe insert")
         mycursor.execute("INSERT INTO hoehen (lat, lon, quelle) VALUES (%s,%s,%s)",(str(Sonden.lat),str(Sonden.lon),"sonden_class.py",))
         mydb.commit()

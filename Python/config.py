@@ -3,7 +3,7 @@ import logging
 import configparser
 import os
 
-config_version = '1.0'
+config_version = '1.1'
 
 
 def create(config):
@@ -20,7 +20,8 @@ def create(config):
         'mqtt-sondensucher.de': '1',
         'API': '1',
         'config_version': config_version,
-        'wind' : '1'
+        'wind' : '0',
+        'prediction' : '1'
     }
 
     with open('config/config.ini', 'w') as configfile:

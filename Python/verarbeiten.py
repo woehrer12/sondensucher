@@ -9,7 +9,7 @@ from sonden_class import Sonden
 sonde = Sonden()
 
 def sonden(mydb):
-  #try: #TODO
+  try:
     sondenids = functions.sondenids(mydb, 30)
     anzahlids = len(sondenids)
     j = 0
@@ -22,8 +22,8 @@ def sonden(mydb):
         if sonde.startort() == "unbekannt":
           sonde.updatestartort()
         j = j + 1
-  # except:
-  #       print("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
-  #       logging.error("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
-  #       return None
+  except:
+        print("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
+        return None
 

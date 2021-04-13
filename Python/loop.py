@@ -3,10 +3,10 @@ import logging
 import sys
 import configparser
 import mysql.connector
+import time
 
 #Import eigene Module
 import getradiosondycsv
-import time
 import hoehen
 import Database
 import config
@@ -69,21 +69,44 @@ except:
 
 #TODO eigenen Mosquitto auch abfragen
 
+starttime = int(time.time())
+halbmintime = 0
+mintime = 0
+fuenfmintime = 0
+print(starttime)
+
 while True:
     print("loop")
     logging.info("loop")
-    if conf['getradiosondycsv'] == "1":
-        getradiosondycsv.csv(mydb)
-    if conf['gethoehen'] == "1":
-        hoehen.hoehe(mydb)
-    if conf['getsondehub'] == "1":
-        getsondehub.csv(mydb)
-    verarbeiten.sonden(mydb)
-    startort_stats.stats(mydb)
-    prediction.predict(mydb)
+    #Ausführung bei halber Minute
+    if halbmintime < int(time.time()):
+        if conf['getradiosondycsv'] == "1":
+            getradiosondycsv.csv(mydb)
+        verarbeiten.sonden(mydb)
+        startort_stats.stats(mydb)
+        logging.info("Halbe Minute")
+        halbmintime = int(time.time()) + 30
+
+    #Ausführung jede Minute
+    if mintime < int(time.time()):
+        prediction.predict(mydb)
+        Database.löschen(mydb)
+        mintime = int(time.time()) + 60
+        logging.info("Ganze Minute")
+
+
+    #Ausführung 5 Minuten
+    if fuenfmintime < int(time.time()):
+        if conf['gethoehen'] == "1":
+            hoehen.hoehe(mydb)
+        if conf['getsondehub'] == "1":
+            getsondehub.csv(mydb)
+        fuenfmintime = int(time.time()) + 300
+        logging.info("5 Minuten")
+
     if conf['wind'] == "1":
         wind.wind_xml(mydb)
-    Database.löschen(mydb)
+
     time.sleep(30)
 
     #TODO Wind https://plotly.com/python/quiver-plots/
