@@ -69,18 +69,6 @@ def home():
                                  )
 
 
-@app.route('/sonden')
-def sonden():
-    minute = 30
-    if 'min' in request.args:
-        minute = int(request.args['min'])
-    Liste = []
-    Liste = functions.sondenids(mydb, minute)
-    Text = []
-    for i in Liste:
-        sonde.setid(i)
-        Text.append([(i, "  Startort: " + sonde.getstartort())])
-    return flask.render_template('sonden.html', Liste=Liste, Text=Text)
 
 
 @app.route('/map')
@@ -99,6 +87,20 @@ def map():
         lonpredict = request.args['lonpredict']
 
     return flask.render_template('leaflet.html', latsonde=lat, lonsonde=lon, latpredict=latpredict, lonpredict=lonpredict)
+
+
+@app.route('/sonden')
+def sonden():
+    minute = 30
+    if 'min' in request.args:
+        minute = int(request.args['min'])
+    Liste = []
+    Liste = functions.sondenids(mydb, minute)
+    Text = []
+    for i in Liste:
+        sonde.setid(i)
+        Text.append([(i, "  Startort: " + sonde.getstartort())])
+    return flask.render_template('sonden.html', Liste=Liste, Text=Text)
 
 
 @app.route('/sonden/id', methods=['GET'])
@@ -184,6 +186,31 @@ def startorte_name():
                                  maxhoeheD=maxhoeheD,
                                  lat=lat,
                                  lon=lon)
+
+@app.route('/empfaenger')
+def empfaenger():
+    Liste = []
+    Liste2 = []
+    mycursor.execute("SELECT server FROM sonden WHERE lat!='0' AND sondenid <>'' GROUP BY server ")
+    Liste = mycursor.fetchall()
+    for i in Liste:
+        Liste2.append(str(i)[2:-3])
+    print(Liste)
+    print(Liste2)
+    return flask.render_template('empfaenger.html', Liste=Liste2)
+
+
+@app.route('/empfaenger/name')
+def empfaengername():
+    if 'name' in request.args:
+        name = request.args['name']
+        Liste = []
+        mycursor.execute("SELECT * FROM `sonden` WHERE server = '" + name + "' ORDER BY `sonden`.`sondetime` DESC LIMIT 100 ")
+        Liste = mycursor.fetchall()
+        return flask.render_template('empfaengername.html', Liste=Liste)
+    else:    
+        return "Kein Name eigegeben"
+
 
 
 # API

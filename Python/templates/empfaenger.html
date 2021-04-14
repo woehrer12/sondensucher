@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sondensucher Sondenübersicht</title>
+</head>
+<body>
+    <h1>Auflistungen aktive Sonden</h1>
+    <a href="/">Zurück</a>
+    <ul id="Liste">
+        {% for item in Liste %}
+                <li><a href="empfaenger/name?name={{ item }}">{{item}}</a></li>
+        {% endfor %}
+        </ul>
+</body>
+</html>
