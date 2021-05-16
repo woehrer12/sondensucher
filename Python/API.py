@@ -236,7 +236,7 @@ def api_all():
                       'vgeschposD': sonde.getvgeschposD(),
                       'vgeschnegD': sonde.getvgeschnegD(),
                       'maxhoehe': sonde.getmaxhoehe(),
-                      'startort': sond.getstartort(),
+                      'startort': sonde.getstartort(),
                       }]
         results = results + sondejson
     return jsonify(results)
