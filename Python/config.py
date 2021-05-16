@@ -3,7 +3,7 @@ import logging
 import configparser
 import os
 
-config_version = '1.1'
+config_version = '1.2'
 
 
 def create(config):
@@ -13,13 +13,15 @@ def create(config):
         'dbuser': 'sondensucher',
         'dbpassword': 'sondensucher',
         'dbname': 'sonden',
+        'config_version': config_version,
         # Deaktivierbare Teile
         'getradiosondycsv': '1',
         'getsondehub': '1',
         'gethoehen': '1',
         'mqtt-sondensucher.de': '1',
         'API': '1',
-        'config_version': config_version,
+        'server' : '1',
+        'serverip' : 'sondensucher.de',
         'wind' : '0',
         'prediction' : '1'
     }

@@ -83,14 +83,22 @@
 
    </table>
 
+   <h2>Aktuelle Position</h2>
 
     <a href="https://radiosondy.info/sonde.php?sondenumber={{id}}"target="_blank">Radiosondy</a>
 
     <a href="https://tracker.sondehub.org/?sondehub=1#!mt=osm&mz=8&qm=6_hours&f=RS_{{id}}&q=RS_*;*chase"target="_blank">Sondehub</a>
 
-    <a href="https://www.google.com/maps/@{{lat}},{{lon}},14z"target="_blank">Google Maps</a>
+    <a href="https://www.google.com/maps?q={{lat}},{{lon}}&z=14"target="_blank">Google Maps</a>
 
     <a href="https://aprs.fi/?call={{id}}&timerange=86400&tail=21600"target="_blank">APRS.fi</a>
+
+    <br>
+
+    <h2>Prediction</h2>
+
+    <a href="https://www.google.com/maps?q={{latpredict}},{{lonpredict}}&z=14"target="_blank">Google Maps</a>
+
    <br>
     <iframe
         src="/map?lat={{lat}}&lon={{lon}}&latpredict={{latpredict}}&lonpredict={{lonpredict}}"
