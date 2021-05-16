@@ -195,8 +195,6 @@ def empfaenger():
     Liste = mycursor.fetchall()
     for i in Liste:
         Liste2.append(str(i)[2:-3])
-    print(Liste)
-    print(Liste2)
     return flask.render_template('empfaenger.html', Liste=Liste2)
 
 

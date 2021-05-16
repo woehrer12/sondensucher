@@ -1,4 +1,5 @@
 FROM ubuntu:latest
+RUN command apt-get clean
 RUN command apt-get update
 RUN command apt-get install sudo
 #Git installieren

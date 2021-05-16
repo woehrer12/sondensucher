@@ -108,5 +108,3 @@ while True:
         wind.wind_xml(mydb)
 
     time.sleep(30)
-
-    #TODO Wind https://plotly.com/python/quiver-plots/
