@@ -31,24 +31,31 @@ except:
     print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
     logger.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
 
-try:
-    # Datenbankverbindung herstellen
-    mydb = mysql.connector.connect(
-        host=conf['dbpfad'],
-        user=conf['dbuser'],
-        password=conf['dbpassword'],
-        database=conf['dbname'],
-        auth_plugin='mysql_native_password'
-    )
-    mycursor = mydb.cursor()
-except:
-    print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Datenbankverbindung API.py:" +
-                 str(sys.exc_info()))
+def mydbconnect():
+    try:
+        # Datenbankverbindung herstellen
+        global mydb
+        global mycursor
+        mydb = mysql.connector.connect(
+            host=conf['dbpfad'],
+            user=conf['dbuser'],
+            password=conf['dbpassword'],
+            database=conf['dbname'],
+            auth_plugin='mysql_native_password'
+        )
+        mycursor = mydb.cursor()
+    except:
+        print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+        logger.error("Unexpected error Datenbankverbindung API.py:" +
+                    str(sys.exc_info()))
 
 
 @app.route('/')
 def home():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()
     mycursor.execute("SELECT COUNT(id) FROM `sonden`")
     anzahlsonden = mycursor.fetchone()
     mycursor.execute("SELECT COUNT(id) FROM `hoehen`")
@@ -73,6 +80,10 @@ def home():
 
 @app.route('/map')
 def map():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()    
     lat = 48.82823584499739
     lon = 9.200133373540973
     latpredict = 48.82823584499739
@@ -91,6 +102,10 @@ def map():
 
 @app.route('/sonden')
 def sonden():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()    
     minute = 30
     if 'min' in request.args:
         minute = int(request.args['min'])
@@ -105,6 +120,10 @@ def sonden():
 
 @app.route('/sonden/id', methods=['GET'])
 def sonden_id():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()
     # Check if an ID was provided as part of the URL.
     # If ID is provided, assign it to a variable.
     # If no ID is provided, display an error in the browser.
@@ -140,6 +159,10 @@ def sonden_id():
 
 @app.route('/startorte')
 def startorte():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()
     mycursor.execute(
         "SELECT startort FROM `startort_stats` WHERE anzahl_sonden_72h > 0 ")
     Liste = mycursor.fetchall()
@@ -153,6 +176,10 @@ def startorte():
 
 @app.route('/startorte/name', methods=['GET'])
 def startorte_name():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()
     # Check if an ID was provided as part of the URL.
     # If ID is provided, assign it to a variable.
     # If no ID is provided, display an error in the browser.
@@ -189,6 +216,10 @@ def startorte_name():
 
 @app.route('/empfaenger')
 def empfaenger():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()
     Liste = []
     Liste2 = []
     mycursor.execute("SELECT server FROM sonden WHERE lat!='0' AND sondenid <>'' GROUP BY server ")
@@ -200,6 +231,10 @@ def empfaenger():
 
 @app.route('/empfaenger/name')
 def empfaengername():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()
     if 'name' in request.args:
         name = request.args['name']
         Liste = []
@@ -215,6 +250,10 @@ def empfaengername():
 
 @app.route('/api/v1/resources/sonden/all', methods=['GET'])
 def api_all():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()
     minute = 30
     if 'min' in request.args:
         minute = int(request.args['min'])
@@ -244,6 +283,10 @@ def api_all():
 
 @app.route('/api/v1/resources/sonden', methods=['GET'])
 def api_id():
+    if mydb.is_connected():
+        pass
+    else:
+        mydbconnect()
     # Check if an ID was provided as part of the URL.
     # If ID is provided, assign it to a variable.
     # If no ID is provided, display an error in the browser.
