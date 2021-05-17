@@ -147,8 +147,10 @@ class Sonden():
         return(Sonden.geschw)
         
     def getsondentime(self):
-        
-        return(time.strftime('%d-%m-%Y %H:%M:%S', time.localtime(int(Sonden.sondentime))))
+        if Sonden.time == int:
+            if Sonden.time > 0:
+                return(time.strftime('%d-%m-%Y %H:%M:%S', time.localtime(int(Sonden.sondentime))))
+        return(time.strftime('%d-%m-%Y %H:%M:%S', time.localtime(0)))
         #return(Sonden.sondentime)
   
 
