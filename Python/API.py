@@ -260,7 +260,7 @@ def api_all():
         minute = int(request.args['min'])
     results = []
     sondenids = functions.sondenids(mydb, minute)
-    results = len(sondenids)
+    results = str(len(sondenids)).split()
     logging.info("Alle Sonde abgerufen")
     for id in sondenids:
         sonde.setid(id)

@@ -107,5 +107,5 @@ def predict(mydb):
             i = i + 1
     except:
         print("Unexpected error prediction.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error presiction.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error prediction.py:" + str(sys.exc_info()))
         return None
