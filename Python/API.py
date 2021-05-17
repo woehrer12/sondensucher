@@ -49,6 +49,7 @@ def mydbconnect():
         logger.error("Unexpected error Datenbankverbindung API.py:" +
                     str(sys.exc_info()))
 
+mydbconnect()
 
 @app.route('/')
 def home():
