@@ -16,7 +16,7 @@ def create(config):
         'config_version': config_version,
         # Deaktivierbare Teile
         'getradiosondycsv': '1',
-        'getsondehub': '1',
+        'getsondehub': '0',
         'gethoehen': '1',
         'mqtt-sondensucher.de': '1',
         'API': '1',

@@ -7,6 +7,7 @@ import configparser
 import logging
 import sys
 import functions
+import time
 
 from sonden_class import Sonden
 
@@ -49,14 +50,9 @@ def mydbconnect():
         logger.error("Unexpected error Datenbankverbindung API.py:" +
                     str(sys.exc_info()))
 
-mydbconnect()
-
 @app.route('/')
 def home():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()
+    mydbconnect()
     mycursor.execute("SELECT COUNT(id) FROM `sonden`")
     anzahlsonden = mycursor.fetchone()
     mycursor.execute("SELECT COUNT(id) FROM `hoehen`")
@@ -67,6 +63,7 @@ def home():
     anzahlstartorte = mycursor.fetchone()
     mycursor.execute("SELECT COUNT(id) FROM `startort_stats`")
     anzahlstartort_stats = mycursor.fetchone()
+    mydb.close()
     return flask.render_template('index.html',  anzahlsonden=str(anzahlsonden)[1:-2],
                                  anzahlhoehen=str(anzahlhoehen)[1:-2],
                                  anzahlsonden_stats=str(
@@ -77,14 +74,8 @@ def home():
                                  )
 
 
-
-
 @app.route('/map')
 def map():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()    
     lat = 48.82823584499739
     lon = 9.200133373540973
     latpredict = 48.82823584499739
@@ -103,15 +94,13 @@ def map():
 
 @app.route('/sonden')
 def sonden():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()    
     minute = 30
     if 'min' in request.args:
         minute = int(request.args['min'])
     Liste = []
+    mydbconnect()
     Liste = functions.sondenids(mydb, minute)
+    mydb.close()
     Text = []
     for i in Liste:
         sonde.setid(i)
@@ -121,10 +110,6 @@ def sonden():
 
 @app.route('/sonden/id', methods=['GET'])
 def sonden_id():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()
     # Check if an ID was provided as part of the URL.
     # If ID is provided, assign it to a variable.
     # If no ID is provided, display an error in the browser.
@@ -160,15 +145,13 @@ def sonden_id():
 
 @app.route('/startorte')
 def startorte():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()
+    mydbconnect()
     mycursor.execute(
         "SELECT startort FROM `startort_stats` WHERE anzahl_sonden_72h > 0 ")
     Liste = mycursor.fetchall()
     Text = []
     i = 0
+    mydb.close()
     while i < len(Liste):
         Text.append(str(Liste[i])[2:-3])
         i = i + 1
@@ -177,14 +160,11 @@ def startorte():
 
 @app.route('/startorte/name', methods=['GET'])
 def startorte_name():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()
     # Check if an ID was provided as part of the URL.
     # If ID is provided, assign it to a variable.
     # If no ID is provided, display an error in the browser.
     if 'name' in request.args:
+        mydbconnect()
         name = request.args['name']
         logging.info("Startort abgerufen" + name)
         mycursor.execute(
@@ -203,7 +183,7 @@ def startorte_name():
         startortlatlon = startortlatlon[0]
         lat = startortlatlon[0]
         lon = startortlatlon[1]
-
+        mydb.close()
     else:
         return "Error: No id field provided. Please specify an id."
 
@@ -217,14 +197,12 @@ def startorte_name():
 
 @app.route('/empfaenger')
 def empfaenger():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()
+    mydbconnect()
     Liste = []
     Liste2 = []
     mycursor.execute("SELECT server FROM sonden WHERE lat!='0' AND sondenid <>'' GROUP BY server ")
     Liste = mycursor.fetchall()
+    mydb.close()
     for i in Liste:
         Liste2.append(str(i)[2:-3])
     return flask.render_template('empfaenger.html', Liste=Liste2)
@@ -232,15 +210,13 @@ def empfaenger():
 
 @app.route('/empfaenger/name')
 def empfaengername():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()
     if 'name' in request.args:
+        mydbconnect()
         name = request.args['name']
         Liste = []
         mycursor.execute("SELECT * FROM `sonden` WHERE server = '" + name + "' ORDER BY `sonden`.`sondetime` DESC LIMIT 100 ")
         Liste = mycursor.fetchall()
+        mydb.close()
         return flask.render_template('empfaengername.html', Liste=Liste)
     else:    
         return "Kein Name eigegeben"
@@ -251,47 +227,57 @@ def empfaengername():
 
 @app.route('/api/v1/resources/sonden/all', methods=['GET'])
 def api_all():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()
+    minute = 30
+    if 'min' in request.args:
+        minute = int(request.args['min'])
+    results = []
+    mydbconnect()
+    sondenids = functions.sondenids(mydb, minute)
+    mydb.close()
+    if sondenids != [] and sondenids != None:
+        logging.info("Alle Sonde abgerufen")
+        for id in sondenids:
+            time.sleep(0.1)
+            try:
+                sonde.setid(id)
+            except:
+                print(id)
+            sondejson = [{'id': sonde.getid(),
+                        'lat': sonde.getlat(),
+                        'lon': sonde.getlon(),
+                        'hoehe': sonde.gethoehe(),
+                        'server': sonde.getserver(),
+                        'vgeschw': sonde.getvgeschw(),
+                        'freq': sonde.getfreq(),
+                        'richtung': sonde.getrichtung(),
+                        'geschw': sonde.getgeschw(),
+                        'time': sonde.getsondentime(),
+                        'vgeschposD': sonde.getvgeschposD(),
+                        'vgeschnegD': sonde.getvgeschnegD(),
+                        'maxhoehe': sonde.getmaxhoehe(),
+                        'startort': sonde.getstartort(),
+                        }]
+            results = results + sondejson
+        return jsonify(results)
+    return "0"
+
+@app.route('/api/v1/resources/sonden/list', methods=['GET'])
+def api_list():
+    mydbconnect()
     minute = 30
     if 'min' in request.args:
         minute = int(request.args['min'])
     results = []
     sondenids = functions.sondenids(mydb, minute)
-    results = str(len(sondenids)).split()
-    logging.info("Alle Sonde abgerufen")
-    for id in sondenids:
-        sonde.setid(id)
-        sondejson = [{'id': sonde.getid(),
-                      'lat': sonde.getlat(),
-                      'lon': sonde.getlon(),
-                      'hoehe': sonde.gethoehe(),
-                      'server': sonde.getserver(),
-                      'vgeschw': sonde.getvgeschw(),
-                      'freq': sonde.getfreq(),
-                      'richtung': sonde.getrichtung(),
-                      'geschw': sonde.getgeschw(),
-                      'time': sonde.getsondentime(),
-                      'vgeschposD': sonde.getvgeschposD(),
-                      'vgeschnegD': sonde.getvgeschnegD(),
-                      'maxhoehe': sonde.getmaxhoehe(),
-                      'startort': sonde.getstartort(),
-                      }]
-        results = results + sondejson
-    return jsonify(results)
+    mydb.close()
+    if sondenids != [] and sondenids != None:
+        results = results + sondenids
+        return jsonify(results)
+    return "0"
 
 
 @app.route('/api/v1/resources/sonden', methods=['GET'])
 def api_id():
-    if mydb.is_connected():
-        pass
-    else:
-        mydbconnect()
-    # Check if an ID was provided as part of the URL.
-    # If ID is provided, assign it to a variable.
-    # If no ID is provided, display an error in the browser.
     if 'id' in request.args:
         id = request.args['id']
     else:

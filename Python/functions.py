@@ -4,7 +4,6 @@ import logging
 import sys
 import time
 
-
 def sondenids(mydb,minuten):
     try:
         sekunden = minuten * 60

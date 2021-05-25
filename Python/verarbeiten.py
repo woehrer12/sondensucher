@@ -8,9 +8,39 @@ from sonden_class import Sonden
 
 sonde = Sonden()
 
-def sonden(mydb):
-  try:
+try:
+    #Config Datei auslesen
+    config = configparser.ConfigParser()
+    config.read('config/config.ini')
+    conf = config['DEFAULT']
+except:
+    print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
+    logging.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
+
+
+def mydbconnect():
+    try:
+        # Datenbankverbindung herstellen
+        global mydb
+        global mycursor
+        mydb = mysql.connector.connect(
+            host=conf['dbpfad'],
+            user=conf['dbuser'],
+            password=conf['dbpassword'],
+            database=conf['dbname'],
+            auth_plugin='mysql_native_password'
+        )
+        mycursor = mydb.cursor()
+    except:
+        print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+
+
+def sonden():
+  #try:
+    mydbconnect()
     sondenids = functions.sondenids(mydb, 30)
+    mydb.close()
     anzahlids = len(sondenids)
     j = 0
     logging.info("verarbeiten.py")   
@@ -22,8 +52,8 @@ def sonden(mydb):
         if sonde.startort() == "unbekannt":
           sonde.updatestartort()
         j = j + 1
-  except:
-        print("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
-        return None
+  #except:
+        #print("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
+        #logging.error("Unexpected error sonden() verarbeiten.py:" + str(sys.exc_info()))
+        #return None
 
