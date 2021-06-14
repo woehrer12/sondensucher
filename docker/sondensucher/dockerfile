@@ -20,7 +20,7 @@ RUN command pip3 install mysql-connector-python requests paho-mqtt flask numpy p
 
 RUN command cp /sondensucher/crontab /etc/cron.d/crontab
 RUN chmod 0644 /etc/cron.d/crontab
-#RUN command crontab /etc/cron.d/crontab
+RUN command crontab /etc/cron.d/crontab
 
 RUN echo HELLO
 
