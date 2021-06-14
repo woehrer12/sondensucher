@@ -2,7 +2,21 @@ import mysql.connector
 import configparser
 import logging
 import sys
-import time
+
+Sondejson = {
+    "sondenid" : "",
+    "lat" : 0.0,
+    "lon" : 0.0,
+    "hoehe" : 0,
+    "vgeschw" : 0.0,
+    "freq" : "",
+    "richtung" : 0.0,
+    "geschw" : 0.0,
+    "sondentime" : "",
+    "server" : "",
+    "groundhoehe" : 0,
+}
+
 
 def initlogger(filename):
     logger = logging.getLogger()
@@ -23,11 +37,24 @@ def initconfig():
         conf = config['DEFAULT']
         return conf
     except:
-        print("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
+        print("Unexpected error Config lesen functions.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error Config lesen functions.py:" + str(sys.exc_info()))
 
-def getDataBaseConnection(conf):
+def configDatabase():
+        #Konfigdatei initialisieren
+    try:
+        #Config Datei auslesen
+        config = configparser.ConfigParser()
+        config.read('config/Database.ini')
+        Databaseconf = config['DEFAULT']
+        return Databaseconf
+    except:
+        print("Unexpected error Database.ini Config lesen functions.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error Database.ini Config lesen functions.py:" + str(sys.exc_info()))
+
+def getDataBaseConnection():
     #Datenbank initialisieren
+    conf = initconfig()
     try:
         #Datenbankverbindung herstellen
         mydb = mysql.connector.connect(
@@ -39,52 +66,30 @@ def getDataBaseConnection(conf):
             )
         return(mydb)
     except:
+        print("Unexpected error Datenbankverbindung functions.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error Datenbankverbindung functions.py:" + str(sys.exc_info()))
+
+def insertSonde(Sondejson):
+    try:
+        #TODO Auch als Liste übergebbar machen, um nicht die Datenbank für jede Sonde zu öffnen und zu schließen
+        mydb = getDataBaseConnection()
+        mycursor = mydb.cursor()
+        payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES (" + \
+            "'" + Sondejson['sondenid'] + "', " + \
+            Sondejson['lat'] + ", " + \
+            Sondejson['lon'] + ", " + \
+            Sondejson['hoehe'] + ", " + \
+            Sondejson['geschw'] + ", " + \
+            Sondejson['vgeschw'] + ", " + \
+            Sondejson['richtung'] + ", " + \
+            Sondejson['freq'] + ", " + \
+            Sondejson['sondetime'] + ", " + \
+            "'" + Sondejson['server'] + "' " + \
+                ")"
+        mycursor.execute(payload)   
+        mydb.commit()
+        mydb.close()
+    except:
         print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
         logging.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
 
-def sondenids(mydb,minuten):
-    try:
-        sekunden = minuten * 60
-        mycursor = mydb.cursor() 
-        now = int(time.time())
-        payload = "SELECT sondenid FROM sonden WHERE sondetime>(" + str(now) + " - " + str(sekunden) + ") AND lat!='0' AND sondenid<>'' GROUP BY sondenid"
-        mycursor.execute(payload)
-        sondenids = mycursor.fetchall()
-        i = 0
-        anzahl = len(sondenids)
-        list = []
-        while i < anzahl:
-            string = str(sondenids[i])
-            stringlänge = len(string)
-            #print(stringlänge)
-            list.append(string[2:stringlänge-3]) 
-            i += 1
-
-        return list
-    except:
-        print("Unexpected error sondenids() functions.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error sondenids() functions.py:" + str(sys.exc_info()))    
-
-def sondenids_startort(mydb,minuten,startort):
-    try:
-        sekunden = minuten * 60
-        mycursor = mydb.cursor() 
-        now = int(time.time())
-        payload = "SELECT sondenid FROM sonden_stats WHERE sondetime>(" + str(now) + " - " + str(sekunden) + ") AND lat!='0' AND sondenid<>'' GROUP BY sondenid"
-        logging.info(payload)
-        mycursor.execute(payload)
-        sondenids = mycursor.fetchall()
-        i = 0
-        anzahl = len(sondenids)
-        list = []
-        while i < anzahl:
-            string = str(sondenids[i])
-            stringlänge = len(string)
-            #print(stringlänge)
-            list.append(string[2:stringlänge-3]) 
-            i += 1
-
-        return list
-    except:
-        print("Unexpected error sondenids() functions.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error sondenids() functions.py:" + str(sys.exc_info()))  

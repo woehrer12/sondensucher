@@ -4,6 +4,8 @@ RUN command apt-get update
 RUN command apt-get install sudo
 #Git installieren
 RUN command apt-get install git -y
+#Cron installieren
+RUN command apt-get install cron -y
 #Skripte nachladen
 RUN mkdir /logs
 RUN mkdir /config
@@ -15,6 +17,10 @@ RUN command git clone https://github.com/woehrer12/sondensucher.git
 #Python installieren
 RUN command apt install python3-pip -y
 RUN command pip3 install mysql-connector-python requests paho-mqtt flask numpy plotly
+
+COPY ./sondensucher/crontab /etc/cron.d/crontab
+RUN chmod 0644 /etc/cron.d/crontab &&\
+    crontab /etc/cron.d/crontab
 
 RUN echo HELLO
 
