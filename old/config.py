@@ -1,16 +1,13 @@
 import sys
+import logging
 import configparser
 import os
-import functions
-
-
-logger = functions.initlogger("logs/config.log")
 
 config_version = '1.2'
 
 
 def create(config):
-    logger.info("Config File angelegt")
+    logging.info("Config File angelegt")
     config['DEFAULT'] = {
         'dbpfad': 'db',
         'dbuser': 'sondensucher',
@@ -44,10 +41,10 @@ def config():
             conf = config['DEFAULT']
             if conf['config_version'] != config_version:
                 os.remove("config/config.ini")
-                logger.info("Config gelöscht")
+                logging.info("Config gelöscht")
                 create(config)
             else:
-                logger.info("Config Version ok")
+                logging.info("Config Version ok")
         else:
             create(config)
 
@@ -55,8 +52,5 @@ def config():
         conf = config['DEFAULT']
     except:
         print("Unexpected error Config anlegen Database.py:" + str(sys.exc_info()))
-        logger.error(
+        logging.error(
             "Unexpected error Config anlegen Database.py:" + str(sys.exc_info()))
-
-if __name__ == '__main__':
-    config()

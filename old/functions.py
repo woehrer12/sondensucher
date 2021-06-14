@@ -4,43 +4,7 @@ import logging
 import sys
 import time
 
-def initlogger(filename):
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
-    handler = logging.FileHandler(filename)
-    formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
-    handler.setFormatter(formatter)
-    handler.setLevel(logging.INFO)
-    logger.addHandler(handler)
-    return logger
 
-def initconfig():
-    #Konfigdatei initialisieren
-    try:
-        #Config Datei auslesen
-        config = configparser.ConfigParser()
-        config.read('config/config.ini')
-        conf = config['DEFAULT']
-        return conf
-    except:
-        print("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error Config lesen loop.py:" + str(sys.exc_info()))
-
-def getDataBaseConnection(conf):
-    #Datenbank initialisieren
-    try:
-        #Datenbankverbindung herstellen
-        mydb = mysql.connector.connect(
-            host=conf['dbpfad'],
-            user=conf['dbuser'],
-            password=conf['dbpassword'],
-            database=conf['dbname'],
-            auth_plugin='mysql_native_password'
-            )
-        return(mydb)
-    except:
-        print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
 
 def sondenids(mydb,minuten):
     try:
