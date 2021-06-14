@@ -1,43 +1,35 @@
 import mysql.connector
 import configparser
 import os
+import logging
 import sys
 
-from mysql.connector.cursor import MySQLCursor
-import functions
 
-logger = functions.initlogger("logs/Database.log")
-
-conf = functions.initconfig()
-
-def execute(query):
-    mycursor = mydb.cursor()
-    mycursor.execute(query)
-    mycursor.close()
-    mydb.commit()
-
-
-def checkTableExists(mydb, tablename):
-    mycursor = mydb.cursor()
-    mycursor.execute("""
+def checkTableExists(dbcon, tablename):
+    dbcur = dbcon.cursor()
+    dbcur.execute("""
         SELECT COUNT(*)
         FROM information_schema.tables
         WHERE table_name = '{0}'
         """.format(tablename.replace('\'', '\'\'')))
-    if mycursor.fetchone()[0] == 1:
-        mycursor.close()
+    if dbcur.fetchone()[0] == 1:
+        dbcur.close()
         return True
-    mycursor.close()
+
+    dbcur.close()
     return False
+
 
 def sonden(mydb):
     try:
+        mycursor = mydb.cursor()
         # Datenbank sonden anlegen
         if checkTableExists(mydb, "sonden"):
-            logger.info("Datenbank Sonden Existiert")
+            logging.info("Datenbank Sonden Existiert")
         else:
-            logger.info("Datenbank Sonden Existiert nicht")
-            query = "CREATE TABLE sonden(\
+            logging.info("Datenbank Sonden Existiert nicht")
+            mycursor = mydb.cursor()
+            mycursor.execute("CREATE TABLE sonden(\
                 `id` int(11) NOT NULL AUTO_INCREMENT, \
                 `sondenid` text NOT NULL, \
                 `lat` double NOT NULL, \
@@ -57,15 +49,13 @@ def sonden(mydb):
                 `altsucher` double DEFAULT '0.0' NOT NULL, \
                 `dirsucher` double DEFAULT '0.0' NOT NULL, \
                 PRIMARY KEY (id) \
-                )"
-            execute(query)
-            logger.info("Datenbank Sonden wurde erstellt")
+                )")
+            logging.info("Datenbank Sonden wurde erstellt")
     except:
         print("Unexpected error Datenbank Sonden anlegen Database.py:" +
               str(sys.exc_info()))
-        logger.error(
+        logging.error(
             "Unexpected error Datenbank Sonden anlegen Database.py:" + str(sys.exc_info()))
-    
 
 
 def hoehen(mydb):
@@ -73,9 +63,9 @@ def hoehen(mydb):
         mycursor = mydb.cursor()
         # Datenbank Höhen anlegen
         if checkTableExists(mydb, "hoehen"):
-            logger.info("Datenbank Höhen Existiert")
+            logging.info("Datenbank Höhen Existiert")
         else:
-            logger.info("Datenbank Höhen Existiert nicht")
+            logging.info("Datenbank Höhen Existiert nicht")
             mycursor = mydb.cursor()
             mycursor.execute("CREATE TABLE hoehen(\
                 `id` int(11) NOT NULL AUTO_INCREMENT, \
@@ -85,12 +75,11 @@ def hoehen(mydb):
                 `quelle` text NOT NULL, \
                 PRIMARY KEY (id) \
                 )")
-            logger.info("Datenbank Höhen wurde erstellt")
-        mycursor.close()
+            logging.info("Datenbank Höhen wurde erstellt")
     except:
         print("Unexpected error Datenbank Höhen anlegen Database.py:" +
               str(sys.exc_info()))
-        logger.error(
+        logging.error(
             "Unexpected error Datenbank Höhen anlegen Database.py:" + str(sys.exc_info()))
 
 
@@ -99,9 +88,9 @@ def statistiken(mydb):
         mycursor = mydb.cursor()
         # Datenbank sonden anlegen
         if checkTableExists(mydb, "sonden_stats"):
-            logger.info("Datenbank Sonden Statistiken Existiert")
+            logging.info("Datenbank Sonden Statistiken Existiert")
         else:
-            logger.info("Datenbank Sonden Statistiken Existiert nicht")
+            logging.info("Datenbank Sonden Statistiken Existiert nicht")
             mycursor.execute("CREATE TABLE sonden_stats(\
                 `id` int(11) NOT NULL AUTO_INCREMENT, \
                 `sondenid` text NOT NULL, \
@@ -115,12 +104,11 @@ def statistiken(mydb):
                 `sondetime` int(11) DEFAULT '0' NOT NULL, \
                 PRIMARY KEY (id) \
                 )")
-            logger.info("Datenbank Sonden Statistiken wurde erstellt")
-        mycursor.close()
+            logging.info("Datenbank Sonden Statistiken wurde erstellt")
     except:
         print("Unexpected error Datenbank Statistiken anlegen Database.py:" +
               str(sys.exc_info()))
-        logger.error(
+        logging.error(
             "Unexpected error Datenbank Statistiken anlegen Database.py:" + str(sys.exc_info()))
 
 def startorte(mydb):
@@ -128,9 +116,9 @@ def startorte(mydb):
         mycursor = mydb.cursor()
         # Datenbank sonden anlegen
         if checkTableExists(mydb, "startorte"):
-            logger.info("Datenbank Startorte Existiert")
+            logging.info("Datenbank Startorte Existiert")
         else:
-            logger.info("Datenbank startorte Existiert nicht")
+            logging.info("Datenbank startorte Existiert nicht")
             mycursor.execute("CREATE TABLE startorte(\
                 `id` int(11) NOT NULL AUTO_INCREMENT, \
                 `name` text NOT NULL, \
@@ -138,7 +126,7 @@ def startorte(mydb):
                 `lon` double NOT NULL, \
                 PRIMARY KEY (id) \
                 )")
-            logger.info("Datenbank Startorte wurde erstellt")
+            logging.info("Datenbank Startorte wurde erstellt")
             query = "INSERT INTO `startorte` ( `name`, `lat`, `lon`) VALUES \
                     ( 'Stuttgart', 48.8281, 9.20063), \
                     ( 'Idar Oberstein', 49.6927, 7.32619), \
@@ -221,11 +209,11 @@ def startorte(mydb):
                     ( 'Sydney (AU)' , -33.94, 151.17) \
                         ;"
             mycursor.execute(query)        
-            mycursor.close()
+            mydb.commit()
     except:
         print("Unexpected error Datenbank Startorte anlegen Database.py:" +
               str(sys.exc_info()))
-        logger.error(
+        logging.error(
             "Unexpected error Datenbank Startorte anlegen Database.py:" + str(sys.exc_info()) + query)
 
 
@@ -234,9 +222,9 @@ def startort_stats(mydb):
         mycursor = mydb.cursor()
         # Datenbank sonden anlegen
         if checkTableExists(mydb, "startort_stats"):
-            logger.info("Datenbank Startorte Statistiken Existiert")
+            logging.info("Datenbank Startorte Statistiken Existiert")
         else:
-            logger.info("Datenbank Startorte Statistiken Existiert nicht")
+            logging.info("Datenbank Startorte Statistiken Existiert nicht")
             mycursor.execute("CREATE TABLE startort_stats(\
                 `id` int(11) NOT NULL AUTO_INCREMENT, \
                 `startort` text NOT NULL, \
@@ -246,12 +234,11 @@ def startort_stats(mydb):
                 `maxhoeheD` double NOT NULL, \
                 PRIMARY KEY (id) \
                 )")
-            mycursor.close()
-            logger.info("Datenbank Startorte Statistiken wurde erstellt")
+            logging.info("Datenbank Startorte Statistiken wurde erstellt")
     except:
         print("Unexpected error Datenbank Startorte Statistiken anlegen Database.py:" +
               str(sys.exc_info()))
-        logger.error(
+        logging.error(
             "Unexpected error Datenbank Startorte Statistiken anlegen Database.py:" + str(sys.exc_info()))
 
 def prediction(mydb):
@@ -259,9 +246,9 @@ def prediction(mydb):
         mycursor = mydb.cursor()
         # Datenbank sonden anlegen
         if checkTableExists(mydb, "prediction"):
-            logger.info("Datenbank Prediction Existiert")
+            logging.info("Datenbank Prediction Existiert")
         else:
-            logger.info("Datenbank Prediction Existiert nicht")
+            logging.info("Datenbank Prediction Existiert nicht")
             mycursor.execute("CREATE TABLE prediction(\
                 `id` int(11) NOT NULL AUTO_INCREMENT, \
                 `sondenid` text NOT NULL, \
@@ -272,12 +259,11 @@ def prediction(mydb):
                 `quelle` text NOT NULL, \
                 PRIMARY KEY (id) \
                 )")
-            logger.info("Datenbank Startorte Statistiken wurde erstellt")
-        mycursor.close()
+            logging.info("Datenbank Startorte Statistiken wurde erstellt")
     except:
         print("Unexpected error Datenbank Startorte Statistiken anlegen Database.py:" +
               str(sys.exc_info()))
-        logger.error(
+        logging.error(
             "Unexpected error Datenbank Startorte Statistiken anlegen Database.py:" + str(sys.exc_info()))
 
 def löschen(mydb):
@@ -286,30 +272,14 @@ def löschen(mydb):
         payload = "SELECT d1.id FROM sonden d1, sonden d2 WHERE d1.id != d2.id AND d1.sondenid = d2.sondenid AND d1.sondetime = d2.sondetime LIMIT 2000 "
         mycursor.execute(payload)
         sonden = mycursor.fetchall()
+        # print(str(sonden[1])[1:-2])
+
+        string = ""
         for i in sonden:
             payload = "DELETE FROM sonden WHERE id = " + str(i)[1:-2]
             mycursor.execute(payload)
         mydb.commit()
-        mycursor.close()
-        logger.info("Datensätze gelöscht Anzahl: " + str(len(sonden)))
+        logging.info("Datensätze gelöscht Anzahl: " + str(len(sonden)))
     except:
         print("Unexpected error Datenbank doppelte Löchen Database.py:" + str(sys.exc_info()))
-        logger.error("Unexpected error Datenbank doppelte Löschen Database.py:" + str(sys.exc_info()))
-
-
-if __name__ == '__main__':
-    #Datenbanken anlegen
-    try:
-        mydb = functions.getDataBaseConnection(conf)
-        sonden(mydb)
-        hoehen(mydb)
-        statistiken(mydb)
-        startorte(mydb)
-        startort_stats(mydb)
-        prediction(mydb)
-        #Datenbankverbindung Schließen
-        mydb.close()
-        print("Datenbanken erstellt")
-    except:
-        print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
-        logger.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error Datenbank doppelte Löschen Database.py:" + str(sys.exc_info()))

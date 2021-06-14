@@ -1,4 +1,5 @@
 import mysql.connector
+from mysql.connector.cursor import MySQLCursorBufferedDict
 import numpy as np
 import functions
 import time
@@ -16,19 +17,22 @@ except:
     print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
     logging.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
 
-try:
-    #Datenbankverbindung herstellen
-    mydb = mysql.connector.connect(
-        host=conf['dbpfad'],
-        user=conf['dbuser'],
-        password=conf['dbpassword'],
-        database=conf['dbname'],
-        auth_plugin='mysql_native_password'
+def mydbconnect():
+    try:
+        # Datenbankverbindung herstellen
+        global mydb
+        global mycursor
+        mydb = mysql.connector.connect(
+            host=conf['dbpfad'],
+            user=conf['dbuser'],
+            password=conf['dbpassword'],
+            database=conf['dbname'],
+            auth_plugin='mysql_native_password'
         )
-    mycursor = mydb.cursor() 
-except:
-    print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
-    logging.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+        mycursor = mydb.cursor()
+    except:
+        print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
 
 class Sonden():
     sondenid = ""
@@ -63,15 +67,16 @@ class Sonden():
 
 
     def setid(self, id):
-        mycursor = mydb.cursor()
         Sonden.clear(self)
         logging.info("setid id = " + id)
         text = id
         if text.isalnum() and text[0].isalpha() and len(text) > 7:
             Sonden.sondenid = id
+            mydbconnect()
             query = "SELECT sondenid, lat, lon, hoehe, server, vgeschw, freq, richtung, geschw, sondetime FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' ORDER BY `sonden`.`sondetime` DESC LIMIT 1"
             mycursor.execute(query)
             data = mycursor.fetchall()
+            mydb.close()
             if data != []:
                 sondendaten = data[0]
                 Sonden.sondenid = sondendaten[0]
@@ -91,10 +96,11 @@ class Sonden():
                 logging.error("ID not confirm " + id + " Query: " + query)
     
     def refresh(self):
-        mycursor = mydb.cursor()
+        mydbconnect()
         query = "SELECT sondenid, lat, lon, hoehe, server, vgeschw, freq, richtung, geschw, sondetime FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' ORDER BY `sonden`.`date` DESC LIMIT 1"
         mycursor.execute(query)
         data = mycursor.fetchall()
+        mydb.close()
         sondendaten = data[0]
         Sonden.sondenid = sondendaten[0]
         Sonden.lat = sondendaten[1]
@@ -147,38 +153,41 @@ class Sonden():
         return(Sonden.geschw)
         
     def getsondentime(self):
-        if Sonden.sondentime == int:
-            if Sonden.sondentime > 0:
+        if Sonden.sondentime != '':
+            if int(Sonden.sondentime) > 0:
                 return(time.strftime('%d-%m-%Y %H:%M:%S', time.localtime(int(Sonden.sondentime))))
         return(time.strftime('%d-%m-%Y %H:%M:%S', time.localtime(0)))
         #return(Sonden.sondentime)
   
 
     def getvgeschposD(self):
+        mydbconnect()
         query = "SELECT Avg (vgeschw) FROM `sonden` WHERE sondenid = '" + Sonden.sondenid + "'  AND vgeschw > 0"
-        mycursor = mydb.cursor()
         mycursor.execute(query)
         a = mycursor.fetchone()
         mycursor.close()
+        mydb.close()
         if type(a[0]) != float:
-            return 0
+            return 0.0
         return(a[0])
 
     def getvgeschnegD(self):
+        mydbconnect()
         query = "SELECT Avg (vgeschw) FROM `sonden` WHERE sondenid = '" + Sonden.sondenid + "'  AND vgeschw < 0"
-        mycursor = mydb.cursor()
         mycursor.execute(query)
         a = mycursor.fetchone()
         mycursor.close()
+        mydb.close()
         if type(a[0]) != float:
-            return 0
+            return 0.0
         return(a[0])
 
     def getmaxhoehe(self):
-        mycursor = mydb.cursor()
+        mydbconnect()
         mycursor.execute("SELECT hoehe FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' LIMIT 5000")
         sondendaten = mycursor.fetchall()
         mycursor.close()
+        mydb.close()
         anzahl = len(sondendaten)
         j = 0
         data = np.zeros((3,5000))
@@ -194,10 +203,11 @@ class Sonden():
             Sonden.setburst(self)
 
     def isburst(self):
-        mycursor = mydb.cursor()
+        mydbconnect()
         mycursor.execute("SELECT burst FROM sonden_stats WHERE sondenid = '" + Sonden.sondenid + "'")
         sondendaten = mycursor.fetchone()
         mycursor.close()
+        mydb.close()
         #print(Sonden.sondenid)
         #if isinstance(sondendaten, list): 
         if sondendaten[0]:
@@ -208,20 +218,23 @@ class Sonden():
             return False
 	
     def getstartort(self):
-        mycursor = mydb.cursor()
+        mydbconnect()
         mycursor.execute("SELECT startort FROM sonden_stats WHERE sondenid = '" + Sonden.sondenid + "'")
         startort = mycursor.fetchone()
         mycursor.close()
+        mydb.close()
         return str(startort)[2:-3]
     
     def setburst(self):
         Sonden.refresh(self)
-        mycursor = mydb.cursor()
+        mydbconnect()
         mycursor.execute("UPDATE sonden_stats SET burst = TRUE, latburst = '" + str(Sonden.lat) + "', lonburst = '" + str(Sonden.lon) + "' WHERE sondenid = '" + Sonden.sondenid + "'")
         mydb.commit()
+        mydb.close()
 
     def startort(self):
         if Sonden.confirm:
+            mydbconnect()
             mycursor = mydb.cursor()
             mycursor.execute("SELECT * FROM startorte")
             startorte = mycursor.fetchall()
@@ -229,6 +242,7 @@ class Sonden():
             mycursor = mydb.cursor()
             mycursor.execute("SELECT lat, lon FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' ORDER BY `sonden`.`date` ASC LIMIT 1")
             sondendaten = mycursor.fetchone()
+            mydb.close()
             k = len(startorte)
             i = 0
             while i < k:
@@ -246,6 +260,7 @@ class Sonden():
     def updatestartort(self):
         if Sonden.confirm:
             logging.error("Startort konnte nicht definiert werden:  " + Sonden.sondenid)
+            mydbconnect()
             mycursor = mydb.cursor()
             mycursor.execute("SELECT * FROM startorte")
             startorte = mycursor.fetchall()
@@ -253,6 +268,7 @@ class Sonden():
             mycursor = mydb.cursor()
             mycursor.execute("SELECT lat, lon FROM sonden WHERE sondenid = '" + Sonden.sondenid + "' ORDER BY `sonden`.`date` ASC LIMIT 1")
             sondendaten = mycursor.fetchone()
+            mydb.close()
             k = len(startorte)
             i = 0
             while i < k:
@@ -270,28 +286,33 @@ class Sonden():
     def isconfirm(self):
         return Sonden.confirm
 
-    def set_stats(self):
+    def set_stats(self,mydb):
         if Sonden.confirm == True:
             Sonden.checkburst(self)
             mycursor = mydb.cursor()
+            #mydbconnect()
             mycursor.execute("SELECT * FROM `sonden_stats` WHERE sondenid = '"+ Sonden.sondenid + "' ")
             sonden = mycursor.fetchall()
             if sonden != []:
+                #mydbconnect()
                 mycursor.execute("UPDATE sonden_stats SET max_hoehe = '" + str(Sonden.getmaxhoehe(self)) + "', vgeschposD = '" + str(Sonden.getvgeschposD(self)) + "', vgeschnegD = '" + str(Sonden.getvgeschnegD(self)) + "' WHERE sondenid = '" + Sonden.sondenid + "'")
                 mydb.commit()
             else:
                 payload = "INSERT INTO sonden_stats (sondenid, startort, max_hoehe, vgeschposD, vgeschnegD, sondetime) VALUES ('" + Sonden.sondenid + "', '" + Sonden.startort(self) + "', " + str(Sonden.getmaxhoehe(self)) + "," + str(Sonden.getvgeschposD(self)) + "," + str(Sonden.getvgeschnegD(self)) + "," + str(Sonden.sondentime) + ")"
+                #mydbconnect()
                 mycursor.execute(payload)
                 mydb.commit()
+            #mydb.close()
         else:
             logging.error("Set_Stat konnte nicht durchgeführt werden ")
 
     def getgroudhohe(self):
-        mycursor = mydb.cursor() 
+        mydbconnect()
         query = "SELECT hoehe FROM hoehen WHERE Lat = " + str(Sonden.lat) + " AND  Lon = " + str(Sonden.lon)
         mycursor.execute(query)
         hoehe = mycursor.fetchall()
         if hoehe != []:
+            mydb.close()
             hoehe = hoehe[0]
             logging.info("Höhe:" + str(hoehe[0]))
             if type(hoehe[0]) == float:
@@ -301,12 +322,14 @@ class Sonden():
         logging.info("Höhe insert")
         mycursor.execute("INSERT INTO hoehen (lat, lon, quelle) VALUES (%s,%s,%s)",(str(Sonden.lat),str(Sonden.lon),"sonden_class.py",))
         mydb.commit()
+        mydb.close()
         return 0
 
     def prediction_landing(self):
-        mycursor = mydb.cursor() 
+        mydbconnect()
         mycursor.execute("SELECT lat, lon, time FROM prediction WHERE sondenid = '" + Sonden.sondenid + "'  ORDER BY `prediction`.`time` DESC LIMIT 1")
         prediction = mycursor.fetchall()
+        mydb.close()
         if prediction != []:
             prediction = prediction[0]
             lat = prediction[0]

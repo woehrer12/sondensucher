@@ -1,3 +1,4 @@
+cd
 cd sondensucher
 systemctl stop mariadb
 ./compile.sh

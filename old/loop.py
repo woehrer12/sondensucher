@@ -82,7 +82,7 @@ while True:
     if halbmintime < int(time.time()):
         if conf['getradiosondycsv'] == "1":
             getradiosondycsv.csv(mydb)
-        verarbeiten.sonden(mydb)
+        verarbeiten.sonden()
         startort_stats.stats(mydb)
         logging.info("Halbe Minute")
         halbmintime = int(time.time()) + 30
