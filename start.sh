@@ -1,8 +1,8 @@
 
-        echo =====Sondensucher aktualisiert=====
-   		cd ./sondensucher/
-        git pull
-        cd /
+echo =====Sondensucher aktualisiert=====
+cd ./sondensucher/
+git pull
+cd /
 
 python3 ./sondensucher/Python/config.py
 python3 ./sondensucher/Python/Database.py
