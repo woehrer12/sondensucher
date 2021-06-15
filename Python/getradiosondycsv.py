@@ -7,7 +7,7 @@ logger = functions.initlogger("logs/getradiosondy.log")
 
 conf = functions.initconfig()
 
-Sondeframjson = functions.Sondeframjson
+sondeFrameJson = functions.sondeFrameJson
 
 #Header fälschen
 headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '\
@@ -34,17 +34,17 @@ def csv():
                         line = "0"
                     sonde.append(line)
                 #Datenbank eintragen
-                Sondeframjson['sondenid'] = sonde[0]
-                Sondeframjson['lat'] = sonde[1]
-                Sondeframjson['lon'] = sonde[2]
-                Sondeframjson['hoehe'] = sonde[3]
-                Sondeframjson['geschw'] = sonde[4]
-                Sondeframjson['vgeschw'] = sonde[5]
-                Sondeframjson['richtung'] = sonde[6]
-                Sondeframjson['freq'] = sonde[7]
-                Sondeframjson['sondetime'] = sonde[8]
-                Sondeframjson['server'] = "radiosondy"
-                functions.insertSonde(Sondeframjson)
+                sondeFrameJson['sondenid'] = sonde[0]
+                sondeFrameJson['lat'] = sonde[1]
+                sondeFrameJson['lon'] = sonde[2]
+                sondeFrameJson['hoehe'] = sonde[3]
+                sondeFrameJson['geschw'] = sonde[4]
+                sondeFrameJson['vgeschw'] = sonde[5]
+                sondeFrameJson['richtung'] = sonde[6]
+                sondeFrameJson['freq'] = sonde[7]
+                sondeFrameJson['sondetime'] = sonde[8]
+                sondeFrameJson['server'] = "radiosondy"
+                functions.insertSonde(sondeFrameJson)
 
     except:
         print("Unexpected error csv.py:" + str(sys.exc_info()))

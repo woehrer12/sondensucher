@@ -1,4 +1,5 @@
 # https://programminghistorian.org/en/lessons/creating-apis-with-python-and-flask#implementing-our-api
+from Python.functions import APIStats
 import flask
 import json
 from flask import request, jsonify
@@ -9,61 +10,14 @@ import sys
 import functions
 import time
 
-from sonden_class import Sonden
-
-sonde = Sonden()
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler("logs/API.log")
-formatter = logging.Formatter('%(asctime)s:%(levelname)s-%(message)s')
-handler.setFormatter(formatter)
-handler.setLevel(logging.INFO)
-logger.addHandler(handler)
+logger = functions.initlogger("logs/API.log")
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = False
-try:
-    # Config Datei auslesen
-    config = configparser.ConfigParser()
-    config.read('config/config.ini')
-    conf = config['DEFAULT']
-except:
-    print("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
-    logger.error("Unexpected error Config lesen API.py:" + str(sys.exc_info()))
-
-def mydbconnect():
-    try:
-        # Datenbankverbindung herstellen
-        global mydb
-        global mycursor
-        mydb = mysql.connector.connect(
-            host=conf['dbpfad'],
-            user=conf['dbuser'],
-            password=conf['dbpassword'],
-            database=conf['dbname'],
-            auth_plugin='mysql_native_password'
-        )
-        mycursor = mydb.cursor()
-    except:
-        print("Unexpected error Datenbankverbindung API.py:" + str(sys.exc_info()))
-        logger.error("Unexpected error Datenbankverbindung API.py:" +
-                    str(sys.exc_info()))
 
 @app.route('/')
 def home():
-    mydbconnect()
-    mycursor.execute("SELECT COUNT(id) FROM `sonden`")
-    anzahlsonden = mycursor.fetchone()
-    mycursor.execute("SELECT COUNT(id) FROM `hoehen`")
-    anzahlhoehen = mycursor.fetchone()
-    mycursor.execute("SELECT COUNT(id) FROM `sonden_stats`")
-    anzahlsonden_stats = mycursor.fetchone()
-    mycursor.execute("SELECT COUNT(id) FROM `startorte`")
-    anzahlstartorte = mycursor.fetchone()
-    mycursor.execute("SELECT COUNT(id) FROM `startort_stats`")
-    anzahlstartort_stats = mycursor.fetchone()
-    mydb.close()
+    apiStatsJson = functions.APIStats()
+    #TODO Übergabe an Template
     return flask.render_template('index.html',  anzahlsonden=str(anzahlsonden)[1:-2],
                                  anzahlhoehen=str(anzahlhoehen)[1:-2],
                                  anzahlsonden_stats=str(
@@ -98,13 +52,12 @@ def sonden():
     if 'min' in request.args:
         minute = int(request.args['min'])
     Liste = []
-    mydbconnect()
-    Liste = functions.sondenids(mydb, minute)
-    mydb.close()
+    Liste = functions.sondenids(minute)
     Text = []
-    for i in Liste:
-        sonde.setid(i)
-        Text.append([(i, "  Startort: " + sonde.getstartort())])
+    #TODO Startorte dazu schreiben
+    # for i in Liste:
+    #     sonde.setid(i)
+    #     Text.append([(i, "  Startort: " + sonde.getstartort())])
     return flask.render_template('sonden.html', Liste=Liste, Text=Text)
 
 
@@ -231,7 +184,6 @@ def api_all():
     if 'min' in request.args:
         minute = int(request.args['min'])
     results = []
-    mydbconnect()
     sondenids = functions.sondenids(mydb, minute)
     mydb.close()
     if sondenids != [] and sondenids != None:
