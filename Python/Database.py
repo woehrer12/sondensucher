@@ -22,7 +22,7 @@ def execute(query):
 
 
 
-def checkTableExists(mydb, tablename):
+def checkTableExists(tablename):
     mycursor = mydb.cursor()
     mycursor.execute("""
         SELECT COUNT(*)
@@ -37,7 +37,7 @@ def checkTableExists(mydb, tablename):
 
 def sonden():
     # Datenbank anlegen
-    if checkTableExists(mydb, "sonden"):
+    if checkTableExists("sonden"):
         logger.info("Datenbank Sonden Existiert")
     else:
         logger.info("Datenbank Sonden Existiert nicht")
@@ -45,7 +45,7 @@ def sonden():
 
 def hoehen():
     # Datenbank anlegen
-    if checkTableExists(mydb, "hoehen"):
+    if checkTableExists("hoehen"):
         logger.info("Datenbank Höhen Existiert")
     else:
         logger.info("Datenbank Höhen Existiert nicht")
@@ -53,7 +53,7 @@ def hoehen():
 
 def statistiken():
     # Datenbank anlegen
-    if checkTableExists(mydb, "sonden_stats"):
+    if checkTableExists("sonden_stats"):
         logger.info("Datenbank Sonden Statistiken Existiert")
     else:
         logger.info("Datenbank Sonden Statistiken Existiert nicht")
@@ -61,7 +61,7 @@ def statistiken():
     
 def startorte():
     # Datenbank anlegen
-    if checkTableExists(mydb, "startorte"):
+    if checkTableExists("startorte"):
         logger.info("Datenbank Startorte Existiert")
     else:
         logger.info("Datenbank startorte Existiert nicht")
@@ -71,7 +71,7 @@ def startorte():
 
 def startort_stats():
     # Datenbank anlegen
-    if checkTableExists(mydb, "startort_stats"):
+    if checkTableExists("startort_stats"):
         logger.info("Datenbank Startorte Statistiken Existiert")
     else:
         logger.info("Datenbank Startorte Statistiken Existiert nicht")
@@ -79,12 +79,13 @@ def startort_stats():
 
 def prediction():
     # Datenbank anlegen
-    if checkTableExists(mydb, "prediction"):
+    if checkTableExists("prediction"):
         logger.info("Datenbank Prediction Existiert")
     else:
         logger.info("Datenbank Prediction Existiert nicht")
         execute(Databaseconf['prediction'])
 
+#TODO nach functions exportieren
 def löschen(mydb):
     try:
         mycursor = mydb.cursor()
