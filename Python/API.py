@@ -5,7 +5,6 @@ import json
 from flask import request, jsonify
 import mysql.connector
 import configparser
-import logging
 import sys
 import functions
 import time
@@ -93,7 +92,7 @@ def sonden_id():
                                          )
 
     return "Error: No id field provided. Please specify an id."
-    logging.info("Sonde abgerufen" + id)
+    logger.info("Sonde abgerufen" + id)
 
 
 @app.route('/startorte')
@@ -119,7 +118,7 @@ def startorte_name():
     if 'name' in request.args:
         mydbconnect()
         name = request.args['name']
-        logging.info("Startort abgerufen" + name)
+        logger.info("Startort abgerufen" + name)
         mycursor.execute(
             "SELECT * FROM `startort_stats` WHERE startort = '" + name + "' ")
         Liste = mycursor.fetchall()
@@ -184,10 +183,9 @@ def api_all():
     if 'min' in request.args:
         minute = int(request.args['min'])
     results = []
-    sondenids = functions.sondenids(mydb, minute)
-    mydb.close()
+    sondenids = functions.sondenids(minute)
     if sondenids != [] and sondenids != None:
-        logging.info("Alle Sonde abgerufen")
+        logger.info("Alle Sonde abgerufen")
         for id in sondenids:
             time.sleep(0.1)
             try:
@@ -215,13 +213,12 @@ def api_all():
 
 @app.route('/api/v1/resources/sonden/list', methods=['GET'])
 def api_list():
-    mydbconnect()
+    #TODO testen
     minute = 30
     if 'min' in request.args:
         minute = int(request.args['min'])
     results = []
-    sondenids = functions.sondenids(mydb, minute)
-    mydb.close()
+    sondenids = functions.sondenids(minute)
     if sondenids != [] and sondenids != None:
         results = results + sondenids
         return jsonify(results)
@@ -230,39 +227,18 @@ def api_list():
 
 @app.route('/api/v1/resources/sonden', methods=['GET'])
 def api_id():
+    #TODO testen
     if 'id' in request.args:
         id = request.args['id']
     else:
         return "Error: No id field provided. Please specify an id."
-    logging.info("Sonde abgerufen" + id)
-    # Create an empty list for our results
-    results = []
-
-    # Loop through the data and match results that fit the requested ID.
-    # IDs are unique, but other fields might return many results
-    sonde.setid(id)
-    if sonde.isconfirm():
-        results = [{'id': sonde.getid(),
-                    'lat': sonde.getlat(),
-                    'lon': sonde.getlon(),
-                    'hoehe': sonde.gethoehe(),
-                    'server': sonde.getserver(),
-                    'vgeschw': sonde.getvgeschw(),
-                    'freq': sonde.getfreq(),
-                    'richtung': sonde.getrichtung(),
-                    'geschw': sonde.getgeschw(),
-                    'time': sonde.getsondentime(),
-                    'vgeschposD': sonde.getvgeschposD(),
-                    'vgeschnegD': sonde.getvgeschnegD(),
-                    'maxhoehe': sonde.getmaxhoehe(),
-                    'startort': sonde.getstartort(),
-                    }]
-        return jsonify(results)
-    else:
+    logger.info("Sonde abgerufen" + id)
+    if functions.getSonde(id) == False:
         return "Keine Sonde mit der ID gefunden"
-
-    # Use the jsonify function from Flask to convert our list of
-    # Python dictionaries to the JSON format.
+    else:
+        results = functions.getSonde(id)
+        #TODO jsonify oder nicht?
+        return jsonify(results)
 
 
 @app.errorhandler(404)
