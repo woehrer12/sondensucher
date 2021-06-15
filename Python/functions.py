@@ -99,7 +99,6 @@ def getDataBaseConnection():
 
 def insertSonde(sondeFrameJson):
     try:
-        #TODO Auch als Liste übergebbar machen, um nicht die Datenbank für jede Sonde zu öffnen und zu schließen
         mydb = getDataBaseConnection()
         mycursor = mydb.cursor()
         payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES (" + \
@@ -119,8 +118,8 @@ def insertSonde(sondeFrameJson):
         mycursor.close()
         mydb.close()
     except:
-        print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
+        print("Unexpected error insertSonde functions.py:" + str(sys.exc_info()))
+        logging.error("Unexpected error insertSonde functions.py:" + str(sys.exc_info()))
 
 def APIStats():
     try:

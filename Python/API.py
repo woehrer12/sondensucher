@@ -64,6 +64,7 @@ def sonden_id():
 
 @app.route('/startorte')
 def startorte():
+    #TODO
     mydbconnect()
     mycursor.execute(
         "SELECT startort FROM `startort_stats` WHERE anzahl_sonden_72h > 0 ")
@@ -79,9 +80,7 @@ def startorte():
 
 @app.route('/startorte/name', methods=['GET'])
 def startorte_name():
-    # Check if an ID was provided as part of the URL.
-    # If ID is provided, assign it to a variable.
-    # If no ID is provided, display an error in the browser.
+    #TODO
     if 'name' in request.args:
         mydbconnect()
         name = request.args['name']
@@ -116,6 +115,7 @@ def startorte_name():
 
 @app.route('/empfaenger')
 def empfaenger():
+    #TODO
     mydbconnect()
     Liste = []
     Liste2 = []
@@ -129,6 +129,7 @@ def empfaenger():
 
 @app.route('/empfaenger/name')
 def empfaengername():
+    #TODO
     if 'name' in request.args:
         mydbconnect()
         name = request.args['name']

@@ -117,5 +117,5 @@ if __name__ == '__main__':
         mydb.close()
         print("Datenbanken erstellt")
     except:
-        print("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
-        logger.error("Unexpected error Datenbankverbindung loop.py:" + str(sys.exc_info()))
+        print("Unexpected error main Database.py:" + str(sys.exc_info()))
+        logger.error("Unexpected error main Database.py:" + str(sys.exc_info()))
