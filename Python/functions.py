@@ -199,9 +199,10 @@ def getSonde(sondenid):
 
     except:
         print("Unexpected error getSonde() functions.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error getSonde() functions.py:" + str(sys.exc_info()))    
+        logging.error("Unexpected error getSonde() functions.py:" + str(sys.exc_info()))
+        return False
 
 
 if __name__ == '__main__':
     #TODO only for Test
-    print(getSonde('D17047530'))
+    print(getSonde('D170475'))
