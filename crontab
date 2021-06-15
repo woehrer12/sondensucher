@@ -1,3 +1,6 @@
 
-*/2 * * * * /usr/bin/sh /sondensucher/cron2.sh
-*/2 * * * * python3 /sondensucher/Python/getradiosondycsv.py  >/dev/null 2>&1
+*/1 * * * * python3 /sondensucher/Python/getradiosondycsv.py  >/dev/null 2>&1
+*/1 * * * * python3 /sondensucher/Python/getradiosondycsv.py  >/dev/null
+*/1 * * * * python3 /sondensucher/Python/getradiosondycsv.py  2>&1
+*/1 * * * * python3 /sondensucher/Python/getradiosondycsv.py
+*/1 * * * * python3 /sondensucher/Python/getradiosondycsv.py >> /var/log/test.log
