@@ -10,98 +10,98 @@
    <table>
         <tr>
            <th>ID </th>
-           <th>{{id}}</th>
+           <th>{{data.sondenid}}</th>
         </tr>
         <tr>
             <th>Lat </th>
-            <th>{{lat}}</th>
+            <th>{{data.lat}}</th>
         </tr>
         <tr>
             <th>Lon </th>
-            <th>{{lon}}</th>
+            <th>{{data.lon}}</th>
         </tr>
         <tr>
             <th>Höhe </th>
-            <th>{{hoehe}}</th>
+            <th>{{data.hoehe}}</th>
         </tr>
         <tr>
             <th>Höhe über Grund </th>
-            <th>{{hoeheoverground}}</th>
+            <th>{{data.groundhoehe}}</th>
         </tr>
         <tr>
             <th>Server </th>
-            <th>{{server}}</th>
+            <th>{{data.server}}</th>
         </tr>
         <tr>
             <th>Steigrate </th>
-            <th>{{vgeschw}}</th>
+            <th>{{data.vgeschw}}</th>
         </tr>
         <tr>
             <th>Frequenz </th>
-            <th>{{freq}}</th>
+            <th>{{data.freq}}</th>
         </tr>        
         <tr>
             <th>Richtung </th>
-            <th>{{richtung}}</th>
+            <th>{{data.richtung}}</th>
         </tr>
         <tr>
             <th>Geschwindigkeit </th>
-            <th>{{geschw}}</th>
+            <th>{{data.geschw}}</th>
         </tr>
         <tr>
             <th>Sondenzeit </th>
-            <th>{{time}}</th>
+            <th>{{data.time}}</th>
         </tr>
         <tr>
             <th>Durchschnittliche Steigrate </th>
-            <th>{{vgeschposD}}</th>
+            <th>{{data.vgeschposD}}</th>
         </tr>
         <tr>
             <th>Durchschnittliche Sinkrate</th>
-            <th>{{vgeschnegD}}</th>
+            <th>{{data.vgeschnegD}}</th>
         </tr>
         <tr>
             <th>Maximale Höhe </th>
-            <th>{{maxhoehe}}</th>
+            <th>{{data.maxhoehe}}</th>
         </tr>
         <tr>
             <th>Startort </th>
-            <th>{{startort}}</th>
+            <th>{{data.startort}}</th>
         </tr>
         <tr>
             <th>Prediction Lat</th>
-            <th>{{latpredict}}</th>
+            <th>{{data.latpredict}}</th>
         </tr>
         <tr>
             <th>Prediction Lon</th>
-            <th>{{lonpredict}}</th>
+            <th>{{data.lonpredict}}</th>
         </tr>
         <tr>
             <th>Prediction Time</th>
-            <th>{{timepredict}}</th>
+            <th>{{data.timepredict}}</th>
         </tr>
 
    </table>
 
    <h2>Aktuelle Position</h2>
 
-    <a href="https://radiosondy.info/sonde.php?sondenumber={{id}}"target="_blank">Radiosondy</a>
+    <a href="https://radiosondy.info/sonde.php?sondenumber={{data.sondenid}}"target="_blank">Radiosondy</a>
 
-    <a href="https://tracker.sondehub.org/?sondehub=1#!mt=osm&mz=8&qm=6_hours&f=RS_{{id}}&q=RS_*;*chase"target="_blank">Sondehub</a>
+    <a href="https://tracker.sondehub.org/?sondehub=1#!mt=osm&mz=8&qm=6_hours&f=RS_{{data.sondenid}}&q=RS_*;*chase"target="_blank">Sondehub</a>
 
-    <a href="https://www.google.com/maps?q={{lat}},{{lon}}&z=14"target="_blank">Google Maps</a>
+    <a href="https://www.google.com/maps?q={{data.lat}},{{data.lon}}&z=14"target="_blank">Google Maps</a>
 
-    <a href="https://aprs.fi/?call={{id}}&timerange=86400&tail=21600"target="_blank">APRS.fi</a>
+    <a href="https://aprs.fi/?call={{data.sondenid}}&timerange=86400&tail=21600"target="_blank">APRS.fi</a>
 
     <br>
 
     <h2>Prediction</h2>
 
-    <a href="https://www.google.com/maps?q={{latpredict}},{{lonpredict}}&z=14"target="_blank">Google Maps</a>
+    <a href="https://www.google.com/maps?q={{data.latpredict}},{{data.lonpredict}}&z=14"target="_blank">Google Maps</a>
 
    <br>
     <iframe
-        src="/map?lat={{lat}}&lon={{lon}}&latpredict={{latpredict}}&lonpredict={{lonpredict}}"
+        src="/map?lat={{data.lat}}&lon={{data.lon}}&latpredict={{data.latpredict}}&lonpredict={{data.lonpredict}}"
         width="600" 
         height="400" 
         name="SELFHTML_in_a_box">

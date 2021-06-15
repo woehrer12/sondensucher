@@ -1,5 +1,4 @@
 # https://programminghistorian.org/en/lessons/creating-apis-with-python-and-flask#implementing-our-api
-from Python.functions import APIStats
 import flask
 import json
 from flask import request, jsonify
@@ -17,14 +16,7 @@ app = flask.Flask(__name__)
 def home():
     apiStatsJson = functions.APIStats()
     #TODO Übergabe an Template
-    return flask.render_template('index.html',  anzahlsonden=str(anzahlsonden)[1:-2],
-                                 anzahlhoehen=str(anzahlhoehen)[1:-2],
-                                 anzahlsonden_stats=str(
-                                     anzahlsonden_stats)[1:-2],
-                                 anzahlstartorte=str(anzahlstartorte)[1:-2],
-                                 anzahlstartort_stats=str(
-                                     anzahlstartort_stats)[1:-2],
-                                 )
+    return flask.render_template('index.html',  APIStatsJson=apiStatsJson)
 
 
 @app.route('/map')
@@ -53,46 +45,21 @@ def sonden():
     Liste = []
     Liste = functions.sondenids(minute)
     Text = []
-    #TODO Startorte dazu schreiben
-    # for i in Liste:
-    #     sonde.setid(i)
-    #     Text.append([(i, "  Startort: " + sonde.getstartort())])
     return flask.render_template('sonden.html', Liste=Liste, Text=Text)
 
 
 @app.route('/sonden/id', methods=['GET'])
 def sonden_id():
-    # Check if an ID was provided as part of the URL.
-    # If ID is provided, assign it to a variable.
-    # If no ID is provided, display an error in the browser.
     if 'id' in request.args:
         id = request.args['id']
-        sonde.setid(id)
-        if sonde.isconfirm():
-            (latpredict, lonpredict, timepredict) = sonde.prediction_landing()
-            return flask.render_template('sondenid.html',   id=sonde.getid(),
-                                         lat=sonde.getlat(),
-                                         lon=sonde.getlon(),
-                                         hoehe=sonde.gethoehe(),
-                                         hoeheoverground=(
-                                             sonde.gethoehe() - sonde.getgroudhohe()).__round__(2),
-                                         server=sonde.getserver(),
-                                         vgeschw=sonde.getvgeschw(),
-                                         freq=sonde.getfreq(),
-                                         richtung=sonde.getrichtung(),
-                                         geschw=sonde.getgeschw(),
-                                         time=sonde.getsondentime(),
-                                         vgeschposD=sonde.getvgeschposD().__round__(2),
-                                         vgeschnegD=sonde.getvgeschnegD().__round__(2),
-                                         maxhoehe=sonde.getmaxhoehe(),
-                                         startort=sonde.getstartort(),
-                                         latpredict=latpredict.__round__(2),
-                                         lonpredict=lonpredict.__round__(2),
-                                         timepredict=timepredict
-                                         )
+        logger.info("Sonde abgerufen" + id)
+        if functions.getSonde(id) == False:
+            return "Error: No id field provided. Please specify an id."
+        else:
+            return flask.render_template('sondenid.html',   data=functions.getSonde(id))
 
     return "Error: No id field provided. Please specify an id."
-    logger.info("Sonde abgerufen" + id)
+    
 
 
 @app.route('/startorte')
@@ -186,34 +153,12 @@ def api_all():
     sondenids = functions.sondenids(minute)
     if sondenids != [] and sondenids != None:
         logger.info("Alle Sonde abgerufen")
-        for id in sondenids:
-            time.sleep(0.1)
-            try:
-                sonde.setid(id)
-            except:
-                print(id)
-            sondeFrameJson = [{'id': sonde.getid(),
-                        'lat': sonde.getlat(),
-                        'lon': sonde.getlon(),
-                        'hoehe': sonde.gethoehe(),
-                        'server': sonde.getserver(),
-                        'vgeschw': sonde.getvgeschw(),
-                        'freq': sonde.getfreq(),
-                        'richtung': sonde.getrichtung(),
-                        'geschw': sonde.getgeschw(),
-                        'time': sonde.getsondentime(),
-                        'vgeschposD': sonde.getvgeschposD(),
-                        'vgeschnegD': sonde.getvgeschnegD(),
-                        'maxhoehe': sonde.getmaxhoehe(),
-                        'startort': sonde.getstartort(),
-                        }]
-            results = results + sondeFrameJson
+        results = functions.getSondelist(sondenids)
         return jsonify(results)
     return "0"
 
 @app.route('/api/v1/resources/sonden/list', methods=['GET'])
 def api_list():
-    #TODO testen
     minute = 30
     if 'min' in request.args:
         minute = int(request.args['min'])
@@ -227,7 +172,6 @@ def api_list():
 
 @app.route('/api/v1/resources/sonden', methods=['GET'])
 def api_id():
-    #TODO testen
     if 'id' in request.args:
         id = request.args['id']
     else:
@@ -237,8 +181,7 @@ def api_id():
         return "Keine Sonde mit der ID gefunden"
     else:
         results = functions.getSonde(id)
-        #TODO jsonify oder nicht?
-        return jsonify(results)
+        return (results)
 
 
 @app.errorhandler(404)

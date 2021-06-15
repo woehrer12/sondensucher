@@ -165,16 +165,14 @@ def sondenids(minuten):
 
 def getSonde(sondenid):
     try:
-        #TODO Abfrage mit Liste
         mydb = getDataBaseConnection()
         mycursor = mydb.cursor() 
-        query = "SELECT sondenid, lat, lon, hoehe, server, vgeschw, freq, richtung, geschw, sondetime FROM sonden WHERE sondenid = '" + sondenid + "' ORDER BY `sonden`.`sondetime` DESC LIMIT 1"
+        query = "SELECT sondenid, lat, lon, hoehe, vgeschw, freq, richtung, geschw, sondetime, server FROM sonden WHERE sondenid = '" + sondenid + "' ORDER BY `sonden`.`sondetime` DESC LIMIT 1"
         mycursor.execute(query)
         data = mycursor.fetchall()
         sondendaten = data[0]
         mycursor.close()
         mydb.close()
-
 
         sondeJson['sondenid'] = sondendaten[0]
         sondeJson['lat'] = sondendaten[1]
@@ -202,7 +200,14 @@ def getSonde(sondenid):
         logging.error("Unexpected error getSonde() functions.py:" + str(sys.exc_info()))
         return False
 
+def getSondelist(liste):
+    result = []
+    for i in liste:
+        result.append(getSonde(i))
+    return result
+        
 
 if __name__ == '__main__':
     #TODO only for Test
-    print(getSonde('D170475'))
+    liste = ['D17047530','D18050861']
+    print(getSondelist(liste))
