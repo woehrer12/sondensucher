@@ -24,4 +24,4 @@ RUN command crontab /etc/cron.d/crontab
 
 RUN echo HELLO
 
-CMD ./sondensucher/start.sh
+CMD cron && ./sondensucher/start.sh

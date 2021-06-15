@@ -4,3 +4,4 @@
 */1 * * * * python3 /sondensucher/Python/getradiosondycsv.py  2>&1
 */1 * * * * python3 /sondensucher/Python/getradiosondycsv.py
 */1 * * * * python3 /sondensucher/Python/getradiosondycsv.py >> /var/log/test.log
+*/1 * * * * echo hellp >> /var/log/hello.log
