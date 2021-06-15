@@ -2,6 +2,7 @@ import csv
 import requests
 import sys
 import functions
+import time
 
 logger = functions.initlogger("logs/getradiosondy.log")
 
@@ -51,5 +52,7 @@ def csv():
         logger.error("Unexpected error getradiosondycsv.py:" + str(sys.exc_info()))
 
 if __name__ == '__main__':
-    if conf['getradiosondycsv'] == "1":
-        csv()
+    while True:
+        if conf['getradiosondycsv'] == "1":
+            csv()
+        time.sleep(60)
