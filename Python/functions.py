@@ -124,19 +124,18 @@ def insertSonde(sondeFrameJson):
 
 def APIStats():
     try:
-        #TODO testen
         mydb = getDataBaseConnection()
         mycursor = mydb.cursor()
         mycursor.execute("SELECT COUNT(id) FROM `sonden`")
-        apiStatsJson['sonden'] = mycursor.fetchone()
+        apiStatsJson['sonden'] = mycursor.fetchone()[0]
         mycursor.execute("SELECT COUNT(id) FROM `hoehen`")
-        apiStatsJson['hoehen'] = mycursor.fetchone()
+        apiStatsJson['hoehen'] = mycursor.fetchone()[0]
         mycursor.execute("SELECT COUNT(id) FROM `sonden_stats`")
-        apiStatsJson['sonden_stats'] = mycursor.fetchone()
+        apiStatsJson['sonden_stats'] = mycursor.fetchone()[0]
         mycursor.execute("SELECT COUNT(id) FROM `startorte`")
-        apiStatsJson['startorte'] = mycursor.fetchone()
+        apiStatsJson['startorte'] = mycursor.fetchone()[0]
         mycursor.execute("SELECT COUNT(id) FROM `startort_stats`")
-        apiStatsJson['startorte_stats'] = mycursor.fetchone()
+        apiStatsJson['startorte_stats'] = mycursor.fetchone()[0]
         mycursor.close()
         mydb.close()
         return apiStatsJson
@@ -154,14 +153,9 @@ def sondenids(minuten):
         payload = "SELECT sondenid FROM sonden WHERE sondetime>(" + str(now) + " - " + str(sekunden) + ") AND lat!='0' AND sondenid<>'' GROUP BY sondenid"
         mycursor.execute(payload)
         sondenids = mycursor.fetchall()
-        i = 0
         list = []
-        #TODO testen
         for ids in sondenids:
-            string = str(sondenids[i])
-            stringlänge = len(string)
-            #print(stringlänge)
-            list.append(string[2:stringlänge-3])
+            list.append(ids[0])
         mycursor.close()
         mydb.close()
         return list
@@ -171,16 +165,43 @@ def sondenids(minuten):
 
 def getSonde(sondenid):
     try:
-        #TODO testen
         #TODO Abfrage mit Liste
         mydb = getDataBaseConnection()
         mycursor = mydb.cursor() 
-        #TODO Alle Abfragen für das sondeJson
+        query = "SELECT sondenid, lat, lon, hoehe, server, vgeschw, freq, richtung, geschw, sondetime FROM sonden WHERE sondenid = '" + sondenid + "' ORDER BY `sonden`.`sondetime` DESC LIMIT 1"
+        mycursor.execute(query)
+        data = mycursor.fetchall()
+        sondendaten = data[0]
         mycursor.close()
         mydb.close()
+
+
+        sondeJson['sondenid'] = sondendaten[0]
+        sondeJson['lat'] = sondendaten[1]
+        sondeJson['lon'] = sondendaten[2]
+        sondeJson['hoehe'] = sondendaten[3]
+        sondeJson['vgeschw'] = sondendaten[4]
+        sondeJson['freq'] = sondendaten[5]
+        sondeJson['richtung'] = sondendaten[6]
+        sondeJson['geschw'] = sondendaten[7]
+        sondeJson['sondetime'] = sondendaten[8]
+        sondeJson['server'] = sondendaten[9]
+        #TODO restliche Daten auffüllen
+        sondeJson['groundhoehe'] = 0
+        sondeJson['vgeschposD'] = 0
+        sondeJson['vgeschnegD'] = 0
+        sondeJson['maxhoehe'] = 0 
+        sondeJson['startort'] = 0
+        sondeJson['latpredict'] = 0
+        sondeJson['lonpredict'] = 0
         return sondeJson
 
 
     except:
         print("Unexpected error getSonde() functions.py:" + str(sys.exc_info()))
         logging.error("Unexpected error getSonde() functions.py:" + str(sys.exc_info()))    
+
+
+if __name__ == '__main__':
+    #TODO only for Test
+    print(getSonde('D17047530'))

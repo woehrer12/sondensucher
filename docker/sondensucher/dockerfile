@@ -18,4 +18,4 @@ RUN command pip3 install mysql-connector-python requests paho-mqtt flask numpy p
 
 RUN echo HELLO
 
-CMD cron && ./sondensucher/start.sh
+CMD ./sondensucher/start.sh
