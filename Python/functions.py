@@ -3,7 +3,7 @@ import configparser
 import logging
 import sys
 
-Sondejson = {
+Sondeframjson = {
     "sondenid" : "",
     "lat" : 0.0,
     "lon" : 0.0,
@@ -69,22 +69,22 @@ def getDataBaseConnection():
         print("Unexpected error Datenbankverbindung functions.py:" + str(sys.exc_info()))
         logging.error("Unexpected error Datenbankverbindung functions.py:" + str(sys.exc_info()))
 
-def insertSonde(Sondejson):
+def insertSonde(Sondeframjson):
     try:
         #TODO Auch als Liste übergebbar machen, um nicht die Datenbank für jede Sonde zu öffnen und zu schließen
         mydb = getDataBaseConnection()
         mycursor = mydb.cursor()
         payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES (" + \
-            "'" + Sondejson['sondenid'] + "', " + \
-            Sondejson['lat'] + ", " + \
-            Sondejson['lon'] + ", " + \
-            Sondejson['hoehe'] + ", " + \
-            Sondejson['geschw'] + ", " + \
-            Sondejson['vgeschw'] + ", " + \
-            Sondejson['richtung'] + ", " + \
-            Sondejson['freq'] + ", " + \
-            Sondejson['sondetime'] + ", " + \
-            "'" + Sondejson['server'] + "' " + \
+            "'" + Sondeframjson['sondenid'] + "', " + \
+            Sondeframjson['lat'] + ", " + \
+            Sondeframjson['lon'] + ", " + \
+            Sondeframjson['hoehe'] + ", " + \
+            Sondeframjson['geschw'] + ", " + \
+            Sondeframjson['vgeschw'] + ", " + \
+            Sondeframjson['richtung'] + ", " + \
+            Sondeframjson['freq'] + ", " + \
+            Sondeframjson['sondetime'] + ", " + \
+            "'" + Sondeframjson['server'] + "' " + \
                 ")"
         mycursor.execute(payload)   
         mydb.commit()

@@ -242,7 +242,7 @@ def api_all():
                 sonde.setid(id)
             except:
                 print(id)
-            sondejson = [{'id': sonde.getid(),
+            Sondeframjson = [{'id': sonde.getid(),
                         'lat': sonde.getlat(),
                         'lon': sonde.getlon(),
                         'hoehe': sonde.gethoehe(),
@@ -257,7 +257,7 @@ def api_all():
                         'maxhoehe': sonde.getmaxhoehe(),
                         'startort': sonde.getstartort(),
                         }]
-            results = results + sondejson
+            results = results + Sondeframjson
         return jsonify(results)
     return "0"
 
