@@ -39,7 +39,7 @@ sondeJson = {
     'lonpredict' : 0.0,
     'timepredict' : "",
     'empfaenger' : "",
-    'geo' : {}
+    'geojson' : {}
 }
 apiStatsJson = {
     'sonden' : 0,
@@ -178,7 +178,6 @@ def getSonde(sondenid):
         sondendaten = data[0]
         mycursor.close()
         mydb.close()
-
         sondeJson['sondenid'] = sondendaten[0]
         sondeJson['lat'] = sondendaten[1]
         sondeJson['lon'] = sondendaten[2]
@@ -189,8 +188,8 @@ def getSonde(sondenid):
         sondeJson['geschw'] = sondendaten[7]
         sondeJson['sondetime'] = sondendaten[8]
         sondeJson['server'] = sondendaten[9]
-        sondeJson['empaenger'] = sondendaten[10]
-        sondeJson['geo'] = geojson.Point((sondeJson['lat'],sondeJson['lon']))
+        sondeJson['empfaenger'] = sondendaten[10]
+        sondeJson['geojson'] = geojson.Point((sondeJson['lat'],sondeJson['lon']))
         #TODO restliche Daten auffüllen
         sondeJson['groundhoehe'] = 0
         sondeJson['vgeschposD'] = 0
@@ -199,7 +198,7 @@ def getSonde(sondenid):
         sondeJson['startort'] = 0
         sondeJson['latpredict'] = 0
         sondeJson['lonpredict'] = 0
-        return sondeJson
+        return {**sondeJson}
 
 
     except:
@@ -216,4 +215,5 @@ def getSondelist(liste):
 
 if __name__ == '__main__':
     liste = sondenids(600)
+    print(liste)
     print(getSondelist(liste))
