@@ -26,7 +26,8 @@ def create(config):
         'server' : '1',
         'serverip' : 'sondensucher.de',
         'wind' : '0',
-        'prediction' : '1'
+        'prediction' : '1',
+        'aprsAPIkey' : ''
     }
 
     with open('config/config.ini', 'w') as configfile:
