@@ -45,6 +45,8 @@ def sonden():
     Liste = []
     Liste = functions.sondenids(minute)
     Text = []
+    for i in Liste:
+        Text.append(i)
     return flask.render_template('sonden.html', Liste=Liste, Text=Text)
 
 

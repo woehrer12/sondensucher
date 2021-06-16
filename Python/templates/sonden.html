@@ -9,9 +9,9 @@
     <a href="/">Zurück</a>
     <ul id="Liste">
         {% for item in Text %}
-            {% for id, startort in item %}
-                <li><a href="sonden/id?id={{ id }}">{{id}}{{ startort }}</a></li>
-            {% endfor %}
+            
+                <li><a href="sonden/id?id={{ item }}">{{item}}</a></li>
+
         {% endfor %}
         </ul>
 </body>
