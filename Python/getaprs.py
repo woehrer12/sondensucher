@@ -1,4 +1,3 @@
-from dns.resolver import Timeout
 import functions
 import requests
 import sys
@@ -54,7 +53,7 @@ def getwithids():
                 functions.insertSonde(sondeFrameJson)
 
 
-        logger.info("Radiosondy CSV abgerufen")
+        logger.info("APRS API abgerufen")
 
     except:
         print("Unexpected error getaprs.py:" + str(sys.exc_info()))
