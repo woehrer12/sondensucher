@@ -1,5 +1,8 @@
+from dns.resolver import Timeout
 import functions
 import requests
+import sys
+import time
 
 logger = functions.initlogger("logs/getaprs.log")
 
@@ -17,39 +20,49 @@ conf['aprsAPIkey']
 urlfront = "https://api.aprs.fi/api/get?name="
 urlend = "&what=loc&apikey=" + conf['aprsAPIkey'] + "&format=json"
 
-def get():
+#TODO alle mit Typ Balloon
+
+
+def getwithids():
     try:
         #TODO testen
         ids = functions.sondenids(60)
+        idsstring = ""
         for i in ids:
-            idsstring = str(i) + ","
+            idsstring = idsstring + str(i) + ","
         url = urlfront + idsstring + urlend
-        httpx = requests.get(url, headers=headers)
-
-        antwort = httpx.text
-        
-        logger.info("Radiosondy CSV abgerufen")
-
-        for line in antwort.split('\n'):
-            sonde = []
-            if len(line) != 0:
-                for line in line.split(';'):
-                    if len(line) == 0:
-                        line = "0"
-                    sonde.append(line)
-                #Datenbank eintragen
-                sondeFrameJson['sondenid'] = sonde[0]
-                sondeFrameJson['lat'] = sonde[1]
-                sondeFrameJson['lon'] = sonde[2]
-                sondeFrameJson['hoehe'] = sonde[3]
-                sondeFrameJson['geschw'] = sonde[4]
-                sondeFrameJson['vgeschw'] = sonde[5]
-                sondeFrameJson['richtung'] = sonde[6]
-                sondeFrameJson['freq'] = sonde[7]
-                sondeFrameJson['sondetime'] = sonde[8]
-                sondeFrameJson['server'] = "radiosondy"
+        print(url)
+        response = requests.get(url,headers=headers,  timeout=60)
+        if response.status_code == 200:
+            rjson = response.json()
+            for i in rjson['entries']:
+                print(i['name'])
+                comment = i['comment']
+                print(comment[comment.find("40"):comment.find("MHz")])
+                sondeFrameJson['sondenid'] = i['name']
+                sondeFrameJson['lat'] = i['lat']
+                sondeFrameJson['lon'] = i['lng']
+                sondeFrameJson['hoehe'] = str(int(i['altitude']))
+                sondeFrameJson['geschw'] = str(i['speed'])
+                sondeFrameJson['vgeschw'] = comment[comment.find("Clb=")+4:comment.find("m/s")]
+                sondeFrameJson['richtung'] = str(i['course'])
+                sondeFrameJson['freq'] = str(comment[comment.find("40"):comment.find("MHz")])
+                sondeFrameJson['sondetime'] = i['lasttime']
+                sondeFrameJson['server'] = "aprs.fi"
+                sondeFrameJson['empfaenger'] = i['srccall']
+                #TODO Type, Temperatur, batt, 
                 functions.insertSonde(sondeFrameJson)
 
+
+        logger.info("Radiosondy CSV abgerufen")
+
     except:
-        print("Unexpected error csv.py:" + str(sys.exc_info()))
-        logger.error("Unexpected error getradiosondycsv.py:" + str(sys.exc_info()))
+        print("Unexpected error getaprs.py:" + str(sys.exc_info()))
+        logger.error("Unexpected error getaprs.py:" + str(sys.exc_info()))
+
+if __name__ == '__main__':
+    while True:
+        if conf['getAPRS'] == "1":
+            getwithids()
+        time.sleep(int(conf['aprsRequestTime']))
+    getwithids()

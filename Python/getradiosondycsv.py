@@ -55,4 +55,4 @@ if __name__ == '__main__':
     while True:
         if conf['getradiosondycsv'] == "1":
             csv()
-        time.sleep(60)
+        time.sleep(int(conf['radiosondyRequestTime']))

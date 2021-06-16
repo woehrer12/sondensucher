@@ -19,6 +19,7 @@ def create(config):
         'config_version': config_version,
         # Deaktivierbare Teile
         'getradiosondycsv': '1',
+        'getAPRS' : '1' ,
         'getsondehub': '0',
         'gethoehen': '1',
         'mqtt-sondensucher.de': '1',
@@ -27,7 +28,11 @@ def create(config):
         'serverip' : 'sondensucher.de',
         'wind' : '0',
         'prediction' : '1',
-        'aprsAPIkey' : ''
+        #Keys
+        'aprsAPIkey' : '',
+        #Times
+        'aprsRequestTime' : '900',
+        'radiosondyRequestTime' : '60'
     }
 
     with open('config/config.ini', 'w') as configfile:

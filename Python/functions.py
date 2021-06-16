@@ -16,6 +16,7 @@ sondeFrameJson = {
     'sondentime' : "",
     'server' : "",
     'groundhoehe' : 0,
+    'empfaenger' : ""
 }
 sondeJson = {
     'sondenid' : "",
@@ -99,9 +100,10 @@ def getDataBaseConnection():
 
 def insertSonde(sondeFrameJson):
     try:
+        payload = ""
         mydb = getDataBaseConnection()
         mycursor = mydb.cursor()
-        payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, server) VALUES (" + \
+        payload="INSERT INTO sonden (sondenid, lat, lon, hoehe, geschw, vgeschw, richtung, freq, sondetime, empfaenger, server) VALUES (" + \
             "'" + sondeFrameJson['sondenid'] + "', " + \
             sondeFrameJson['lat'] + ", " + \
             sondeFrameJson['lon'] + ", " + \
@@ -111,6 +113,7 @@ def insertSonde(sondeFrameJson):
             sondeFrameJson['richtung'] + ", " + \
             sondeFrameJson['freq'] + ", " + \
             sondeFrameJson['sondetime'] + ", " + \
+            "'" + sondeFrameJson['empfaenger'] + "', " + \
             "'" + sondeFrameJson['server'] + "' " + \
                 ")"
         mycursor.execute(payload)   
@@ -118,8 +121,8 @@ def insertSonde(sondeFrameJson):
         mycursor.close()
         mydb.close()
     except:
-        print("Unexpected error insertSonde functions.py:" + str(sys.exc_info()))
-        logging.error("Unexpected error insertSonde functions.py:" + str(sys.exc_info()))
+        print("Unexpected error insertSonde functions.py:" + str(sys.exc_info()) + "payload: " + payload)
+        logging.error("Unexpected error insertSonde functions.py:" + str(sys.exc_info()) + "payload: " + payload)
 
 def APIStats():
     try:
