@@ -3,6 +3,7 @@ import configparser
 import logging
 import sys
 import time
+import geojson
 
 sondeFrameJson = {
     'sondenid' : "",
@@ -16,7 +17,7 @@ sondeFrameJson = {
     'sondentime' : "",
     'server' : "",
     'groundhoehe' : 0,
-    'empfaenger' : ""
+    'empfaenger' : "",
 }
 sondeJson = {
     'sondenid' : "",
@@ -37,6 +38,8 @@ sondeJson = {
     'latpredict' : 0.0,
     'lonpredict' : 0.0,
     'timepredict' : "",
+    'empfaenger' : "",
+    'geo' : {}
 }
 apiStatsJson = {
     'sonden' : 0,
@@ -169,7 +172,7 @@ def getSonde(sondenid):
     try:
         mydb = getDataBaseConnection()
         mycursor = mydb.cursor() 
-        query = "SELECT sondenid, lat, lon, hoehe, vgeschw, freq, richtung, geschw, sondetime, server FROM sonden WHERE sondenid = '" + sondenid + "' ORDER BY `sonden`.`sondetime` DESC LIMIT 1"
+        query = "SELECT sondenid, lat, lon, hoehe, vgeschw, freq, richtung, geschw, sondetime, server, empfaenger FROM sonden WHERE sondenid = '" + sondenid + "' ORDER BY `sonden`.`sondetime` DESC LIMIT 1"
         mycursor.execute(query)
         data = mycursor.fetchall()
         sondendaten = data[0]
@@ -186,6 +189,8 @@ def getSonde(sondenid):
         sondeJson['geschw'] = sondendaten[7]
         sondeJson['sondetime'] = sondendaten[8]
         sondeJson['server'] = sondendaten[9]
+        sondeJson['empaenger'] = sondendaten[10]
+        sondeJson['geo'] = geojson.Point((sondeJson['lat'],sondeJson['lon']))
         #TODO restliche Daten auffüllen
         sondeJson['groundhoehe'] = 0
         sondeJson['vgeschposD'] = 0
@@ -210,6 +215,5 @@ def getSondelist(liste):
         
 
 if __name__ == '__main__':
-    #TODO only for Test
-    liste = ['D17047530','D18050861']
+    liste = sondenids(600)
     print(getSondelist(liste))
