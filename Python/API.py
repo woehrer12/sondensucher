@@ -15,7 +15,6 @@ app = flask.Flask(__name__)
 @app.route('/')
 def home():
     apiStatsJson = functions.APIStats()
-    #TODO Übergabe an Template
     return flask.render_template('index.html',  APIStatsJson=apiStatsJson)
 
 

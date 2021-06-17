@@ -24,7 +24,6 @@ urlend = "&what=loc&apikey=" + conf['aprsAPIkey'] + "&format=json"
 
 def getwithids():
     try:
-        #TODO testen
         ids = functions.sondenids(60)
         idsstring = ""
         for i in ids:
